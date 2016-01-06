@@ -3,7 +3,7 @@ package com.wbl.modal;
 import com.wbl.domain.Prov;
 import com.wbl.util.DrawProvImage;
 
-import static com.wbl.modal.Activity.*;
+import static com.wbl.modal.Enum.Activity.*;
 import java.util.*;
 
 /**
@@ -13,7 +13,8 @@ public class ProvImage {
         private List<Prov> provs = new ArrayList<Prov>();
         private List<Platform> roots = new ArrayList<Platform>();
         private Map<String,Platform> nodes = new HashMap<String, Platform>();
-        private int num = 5;
+        private static int num = 5;
+        private  int totalImageNum = 0;
         public ProvImage(){}
         public ProvImage(List<Prov> provs){
                 this.provs = provs;
@@ -32,6 +33,11 @@ public class ProvImage {
         public void setNum(int num) {
                 this.num = num;
         }
+
+        public  int getTotalImageNum() {
+                return totalImageNum;
+        }
+
 
         public class Platform{
                 private String name;
@@ -112,7 +118,6 @@ public class ProvImage {
 
         public void draw(String imageName){
                 int sigal = 0;
-                int start = 0;
                 Queue<Platform> queue = new LinkedList<>(roots);
                 List<Prov>records = new ArrayList<>();
                 while (!queue.isEmpty()){
@@ -130,15 +135,16 @@ public class ProvImage {
                                 nodes.remove(temp.name);
                                 sigal++;
                                 if (sigal % num == 0){
-                                        new DrawProvImage(imageName +"-" + start + ".jpg",records).draw();
-                                        start++;
+                                        new DrawProvImage(imageName +"-" + totalImageNum + ".jpg",records).draw();
+                                        totalImageNum++;
                                         records.clear();
                                 }
                         }
                 }
                 if (!records.isEmpty()){
                         System.out.println(records.size());
-                        new DrawProvImage(imageName +"-" + start + ".jpg",records).draw();
+                        new DrawProvImage(imageName +"-" + totalImageNum + ".jpg",records).draw();
+                        totalImageNum++;
                 }
         }
 

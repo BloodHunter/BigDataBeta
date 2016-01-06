@@ -44,16 +44,15 @@ public class DrawProvImageTest {
         public void testDraw() throws Exception {
 //TODO: Test goes here...
                 List<Prov> provs = provDao.getProv(1,10);
-                DrawProvImage drawProvImage = new DrawProvImage("download1.jpg",provs);
+                DrawProvImage drawProvImage = new DrawProvImage("download1.svg",provs);
                 drawProvImage.draw();
         }
 
         @Test
         public void testDrawForOther() throws Exception{
                 List<Prov> provs = provDao.getProv(11,25);
-                //DrawProvImage drawProvImage = new DrawProvImage("other.jpg",provs);
-                ProvImage image = new ProvImage(provs,10);
-                image.draw("other");
+                DrawProvImage drawProvImage = new DrawProvImage("test.svg",provs);
+                drawProvImage.draw();
         }
 
         /**

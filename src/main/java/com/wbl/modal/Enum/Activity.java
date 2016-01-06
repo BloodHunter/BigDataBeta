@@ -1,4 +1,4 @@
-package com.wbl.modal;
+package com.wbl.modal.Enum;
 
 /**
  * Created by Simple_love on 2015/10/27.

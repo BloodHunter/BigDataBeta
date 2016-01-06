@@ -17,7 +17,7 @@ import java.util.List;
  * ProvDaoImpl Tester.
  *
  * @author <Authors name>
- * @since <pre>Ê®ÔÂ 26, 2015</pre>
+ * @since <pre>Ê®ï¿½ï¿½ 26, 2015</pre>
  * @version 1.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -98,7 +98,7 @@ public class ProvDaoImplTest {
                 provs.add(new Prov("platF","platF-2","platF",ACTIVITY.AGGRAGATION.name(),"platF:platA-1",time));
 
                 for (Prov prov : provs)
-                        provDao.saveProv(prov);
+                        provDao.save(prov);
         }
 
         /**
@@ -118,7 +118,7 @@ public class ProvDaoImplTest {
                 int count = 50;
                 String time = "2015-10-27 09:32:00";
                 for (int i = 1; i <= count; i++){
-                        provDao.saveProv(new Prov(prefix,prefix+"-1","user" +flag +"-" +i,ACTIVITY.DOWNLOAD.name(),
+                        provDao.save(new Prov(prefix,prefix+"-1","user" +flag +"-" +i,ACTIVITY.DOWNLOAD.name(),
                                 prefix + ":" +prefix+"-1",time));
                 }
         }

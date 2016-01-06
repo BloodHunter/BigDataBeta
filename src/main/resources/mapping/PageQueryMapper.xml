@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wbl.dao.PageQueryDao">
+        <resultMap id="resultMap_Prov" type="com.wbl.domain.Prov">
+                <id column="pid" javaType="java.lang.Integer" property="pid"/>
+                <result column="prefix" javaType="java.lang.String" property="prefix"/>
+                <result column="entity" javaType="java.lang.String" property="entity"/>
+                <result column="agent" javaType="java.lang.String" property="agent"/>
+                <result column="activity" javaType="java.lang.String" property="activity"/>
+                <result column="used" javaType="java.lang.String" property="used"/>
+                <result column="time" javaType="java.lang.String" property="time"/>
+        </resultMap>
+        <sql id="prov_column_list">
+                pid,prefix,entity,agent,activity,used,time
+        </sql>
+        <select id="getProv" resultMap="resultMap_Prov" parameterType="java.lang.Integer">
+                SELECT
+                <include refid="prov_column_list"/>
+                FROM prov
+                limit #{startRow},#{endRow}
+        </select>
+</mapper>

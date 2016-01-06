@@ -1,16 +1,13 @@
 package com.wbl.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by Simple_love on 2015/10/26.
  */
 @Entity
-@Table(schema = "prov",name = "prov")
+@Table(name = "prov")
 public class Prov implements Serializable{
         @Id
         @Column(name = "pid")
@@ -99,6 +96,33 @@ public class Prov implements Serializable{
 
         public void setTime(String time) {
                 this.time = time;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Prov prov = (Prov) o;
+
+                if (pid != prov.pid) return false;
+                if (prefix != null ? !prefix.equals(prov.prefix) : prov.prefix != null) return false;
+                if (entity != null ? !entity.equals(prov.entity) : prov.entity != null) return false;
+                if (agent != null ? !agent.equals(prov.agent) : prov.agent != null) return false;
+                if (activity != null ? !activity.equals(prov.activity) : prov.activity != null) return false;
+                return !(used != null ? !used.equals(prov.used) : prov.used != null);
+
+        }
+
+        @Override
+        public int hashCode() {
+                int result = pid;
+                result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
+                result = 31 * result + (entity != null ? entity.hashCode() : 0);
+                result = 31 * result + (agent != null ? agent.hashCode() : 0);
+                result = 31 * result + (activity != null ? activity.hashCode() : 0);
+                result = 31 * result + (used != null ? used.hashCode() : 0);
+                return result;
         }
 
         @Override

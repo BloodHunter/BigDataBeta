@@ -169,11 +169,19 @@
                         <version>1.2.17</version>
                 </dependency>
 
-                <dependency>
+                <!--<dependency>
                         <groupId>com.alibaba</groupId>
                         <artifactId>fastjson</artifactId>
                         <version>1.1.41</version>
+                </dependency>-->
+
+                <dependency>
+                        <groupId>net.sf.json-lib</groupId>
+                        <artifactId>json-lib</artifactId>
+                        <version>2.4</version>
+                        <classifier>jdk15</classifier><!--json-lib是需要区分jdk版本的，pom.xml中的配置应加上标签classifier指定jdk版本-->
                 </dependency>
+
 
                 <!-- 格式化对象，方便输出日志 -->
                 <dependency>
@@ -216,6 +224,20 @@
                         <artifactId>jackson-core</artifactId>
                         <version>2.5.1</version>
                 </dependency>
+
+                <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                        <version>2.5.1</version>
+                </dependency>
+
+                <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                        <version>2.5.0</version>
+                </dependency>
+
+
 
                 <!--pdf-->
                 <dependency>
@@ -292,5 +314,18 @@
         </dependencies>
         <build>
                 <finalName>BigDataBeta</finalName>
+                <plugins>
+                        <!--Maven3默认编译java1.5，所以需要指明编译器插件的版本-->
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>3.1</version>
+                                <configuration>
+                                        <source>1.7</source>
+                                        <target>1.7</target>
+                                        <encoding>UTF-8</encoding>
+                                </configuration>
+                        </plugin>
+                </plugins>
         </build>
 </project>
