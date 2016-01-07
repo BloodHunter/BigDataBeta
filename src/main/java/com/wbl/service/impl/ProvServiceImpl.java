@@ -29,6 +29,11 @@ public class ProvServiceImpl implements ProvService {
         @Autowired
         private ProvDao provDao;
 
+        /**
+         *make a request to local query interface
+         * @param dataName name with query data
+         * @return dataObj contain param {RESULT,MSG,QUERY_ID}
+         */
         @Override
         public JSONObject queryPlatformRelation(String dataName) {
                 JSONObject dataObj = new JSONObject();
@@ -41,8 +46,10 @@ public class ProvServiceImpl implements ProvService {
                 }
                 SendParam sendParam = makeSendParam(dataInfo.getDataId());
                 provDao.save(sendParam);
-                String param = "ReceivedParam=" + JSONObject.fromObject(sendParam).toString();
+                String param = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
+                logger.info(PlatformInfo.PLATFORM_QUERY_URL);
                 JSONObject result = JSONObject.fromObject(HttpRequestUtil.doPostRequest(PlatformInfo.PLATFORM_QUERY_URL,param));
+                logger.info(result);
                 dataObj.put(QUERY_ID,sendParam.getQueryFrom()+"_" + sendParam.getQueryFor() + "_" + sendParam.getRequestId());
                 if (result.get(RESULT) == ERROR){
                         dataObj.put(RESULT,ERROR);
@@ -53,6 +60,13 @@ public class ProvServiceImpl implements ProvService {
                 return dataObj;
         }
 
+
+        /**
+         *get relations in local platform and  report result to platform which start this query ,
+         * if report success, then make a query request to up stream and down stream
+         * @param param receivedParam
+         * @return dataObj
+         */
         @Override
         public JSONObject queryRelation(String param) {
                 JSONObject dataObj = new JSONObject();
@@ -80,6 +94,11 @@ public class ProvServiceImpl implements ProvService {
                 return dataObj;
         }
 
+        /**
+         *make a query request  to up stream and down stream
+         * @param receivedParam query param
+         * @return if query success, return true,otherwise return false
+         */
         private boolean queryAdjacentRelation(ReceivedParam receivedParam){
                 List<String> dataIdList = getRelatedDataId(receivedParam.getDataId());
                 for (String dataId : dataIdList){
@@ -89,6 +108,12 @@ public class ProvServiceImpl implements ProvService {
                 return true;
         }
 
+        /**
+         * make a query request to up stream
+         * @param param query param
+         * @param dataId the id of query data
+         * @return if query success, return true,otherwise return false
+         */
         private boolean queryForUpStream(ReceivedParam param,String dataId){
                 for (Source source:provDao.getSource(dataId)){
                         SendParam sendParam = new SendParam(dataId,param.getQueryFrom(),param.getQueryFor(),
@@ -96,7 +121,8 @@ public class ProvServiceImpl implements ProvService {
                         String requestParam = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
                         String queryUrl = source.getUrl();
                         if (queryUrl != null){
-                                JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(param.getReportUrl(),requestParam));
+                                logger.info("Query for up stream url: " + queryUrl);
+                                JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(queryUrl,requestParam));
                                 if (response.get(RESULT) == ERROR){
                                         String queryId = param.getQueryFrom() + "_" + param.getQueryFor() + "_" + param.getRequestId();
                                         logger.error("QueryId with " + queryId +"  query for upStream[" + source.getSource() +"] is failed" );
@@ -107,6 +133,12 @@ public class ProvServiceImpl implements ProvService {
                 return true;
         }
 
+        /**
+         * make a query request to down stream
+         * @param param query param
+         * @param dataId the id of query data
+         * @return if query success , return true, otherwise return false
+         */
         private boolean queryForDownStream(ReceivedParam param,String dataId){
                 for (Next next:provDao.getNext(dataId)){
                         SendParam sendParam = new SendParam(dataId,param.getQueryFrom(),param.getQueryFor(),
@@ -114,7 +146,8 @@ public class ProvServiceImpl implements ProvService {
                         String requestParam = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
                         String queryUrl = next.getUrl();
                         if (queryUrl != null){
-                                JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(param.getReportUrl(),requestParam));
+                                logger.info("Query for down Stream url: " + queryUrl);
+                                JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(queryUrl,requestParam));
                                 if (response.get(RESULT) == ERROR){
                                         String queryId = param.getQueryFrom() + "_" + param.getQueryFor() + "_" + param.getRequestId();
                                         logger.error("QueryId with " + queryId +"  query for downStream["  + next.getNext() +"] is failed" );
@@ -125,6 +158,11 @@ public class ProvServiceImpl implements ProvService {
                 return true;
         }
 
+        /**
+         * according to dataId,get relation between local platform with other platform
+         * @param dataId the id of query data
+         * @return according relations to make dot line
+         */
         @Override
         public String getRelationBetweenPlatform(String dataId) {
                 StringBuilder builder = new StringBuilder();
@@ -140,6 +178,11 @@ public class ProvServiceImpl implements ProvService {
                 return builder.toString();
         }
 
+        /**
+         *make sure the query request is repeated or not
+         * @param param receivedParam
+         * @return if request is repeated return true, otherwise return false
+         */
         @Override
         public boolean requestIsExist(ReceivedParam param) {
                 ReceivedParam tempReceivedParam = provDao.getReceivedParam(param);
@@ -177,6 +220,11 @@ public class ProvServiceImpl implements ProvService {
                 return builder.toString();
         }*/
 
+        /**
+         * get ancestor and successor of data
+         * @param dataId the id of data
+         * @return ancestor and successor of data
+         */
         private List<String> getRelatedDataId(String dataId){
                 List<String> dataIdList = new ArrayList<>();
                 if (!haveRelationWithOtherData(dataId)){
@@ -207,11 +255,21 @@ public class ProvServiceImpl implements ProvService {
                 return dataIdList;
         }
 
+        /**
+         * whether data have ancestor or successor
+         * @param dataId the id of data
+         * @return if data have ancestor or successor,return true,otherwise false
+         */
         private boolean haveRelationWithOtherData(String dataId){
                 DataInfo dataInfo = provDao.getDataInfoByDataId(dataId);
                 return dataInfo.getRelation() != DATA_RELATION_EMPTY;
         }
 
+        /**
+         * make param when send a request
+         * @param dataId the id of data
+         * @return sendParam
+         */
         private synchronized SendParam makeSendParam(String dataId){
                 SendParam param = new SendParam();
                 param.setDataId(dataId);
