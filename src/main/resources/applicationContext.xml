@@ -47,10 +47,6 @@
                                 hibernate.optimistic-lock=all
                                 hibernate.hbm2ddl.auto=update
                         </value>
-                        <props>
-                                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/prov</prop>
-                                <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
-                        </props>
                 </property>
         </bean>
 
@@ -83,5 +79,28 @@
 
         <bean id="mybatisSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
                 <constructor-arg index="0" ref="mybatisSqlSessionFactory" />
+        </bean>
+
+        <!--Quartz-->
+        <!--<bean name="quartzTest" class="test.com.wbl.quartz.QuartzTest"/>-->
+        <bean name="deleteFileJob" class="com.wbl.modal.time.DeleteFileJob"/>
+        <bean id="quartzTestJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                <property name="targetObject" ref="deleteFileJob"/>
+                <property name="targetMethod" value="deleteFile"/>
+                <property name="concurrent" value="false"/>
+        </bean>
+
+        <bean id="myJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+                <property name="jobDetail" ref="quartzTestJob" />
+                <!--设置任务触发的时间，每天的16：45-->
+                <property name="cronExpression" value="0 45 16 * * ?"/>
+        </bean>
+
+        <bean name="startQuartz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+                <property name="triggers">
+                        <list>
+                                <ref bean="myJobTrigger" />
+                        </list>
+                </property>
         </bean>
 </beans>

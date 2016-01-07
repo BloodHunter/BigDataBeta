@@ -32,7 +32,8 @@ public class DrawImageUtil {
         }*/
 
         public static void draw(List<String> relations,String fileName){
-                draw(relations,getPath(fileName));
+                File out = new File(getPath(fileName));
+                draw(relations,out);
         }
 
         /*public static void draw(List<PlatformNode>platformNodes,File out){
@@ -55,7 +56,7 @@ public class DrawImageUtil {
         private static String getPath(String fileName){
                 String path = DrawImageUtil.class.getClassLoader().getResource("").getPath();
                 int index = path.indexOf("classes");
-                path = path.substring(0,index) + "provImg/" + fileName + "." +IMAGE_TYPE;
+                path = path.substring(0,index) + "provImage/" + fileName + "." +IMAGE_TYPE;
                 path = path.substring(1);
                 return path;
         }

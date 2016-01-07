@@ -175,7 +175,7 @@ public class HttpRequestUtil {
                         conn.setDoOutput(true);
                         conn.setDoInput(true);
                         out = new PrintWriter(conn.getOutputStream());
-                        System.out.println(params);
+                        //System.out.println(params);
                         out.print(params);
                         out.flush();
 

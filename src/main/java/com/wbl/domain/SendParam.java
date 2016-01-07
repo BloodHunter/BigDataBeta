@@ -10,7 +10,7 @@ import javax.persistence.Id;
  */
 @Entity
 public class SendParam {
-        private int sId;
+        private int pId;
         private String dataId;
         private String queryFrom;
         private String queryFor;
@@ -29,13 +29,13 @@ public class SendParam {
         }
 
         @Id
-        @Column(name = "sId")
-        public int getsId() {
-                return sId;
+        @Column(name = "pId")
+        public int getPId() {
+                return pId;
         }
 
-        public void setsId(int sId) {
-                this.sId = sId;
+        public void setPId(int pId) {
+                this.pId = pId;
         }
 
         @Basic
@@ -95,7 +95,7 @@ public class SendParam {
 
                 SendParam sendParam = (SendParam) o;
 
-                if (sId != sendParam.sId) return false;
+                if (pId != sendParam.pId) return false;
                 if (dataId != null ? !dataId.equals(sendParam.dataId) : sendParam.dataId != null) return false;
                 if (queryFrom != null ? !queryFrom.equals(sendParam.queryFrom) : sendParam.queryFrom != null)
                         return false;
@@ -108,7 +108,7 @@ public class SendParam {
 
         @Override
         public int hashCode() {
-                int result = sId;
+                int result = pId;
                 result = 31 * result + (dataId != null ? dataId.hashCode() : 0);
                 result = 31 * result + (queryFrom != null ? queryFrom.hashCode() : 0);
                 result = 31 * result + (queryFor != null ? queryFor.hashCode() : 0);
@@ -120,7 +120,7 @@ public class SendParam {
         @Override
         public String toString() {
                 return "SendParam{" +
-                        "sId=" + sId +
+                        "pId=" + pId +
                         ", dataId='" + dataId + '\'' +
                         ", queryFrom='" + queryFrom + '\'' +
                         ", queryFor='" + queryFor + '\'' +

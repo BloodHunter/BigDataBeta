@@ -35,7 +35,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/prov")
 public class ProvController {
-        private static Map<String,List<String>> relationMap = null;
+        private static Map<String,List<String>> relationMap = new HashMap<>();
         private Logger logger = Logger.getLogger(this.getClass());
 
         private JSONObject dataObj = new JSONObject();
@@ -85,6 +85,11 @@ public class ProvController {
                 return "svgTest";
         }
 
+        @RequestMapping("/provTest")
+        public String provTest(){
+                return "provTest";
+        }
+
         @RequestMapping("/imageTest")
         public @ResponseBody JSONObject uploadFile(HttpServletRequest request) throws Exception{
                 CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -106,29 +111,43 @@ public class ProvController {
                 return dataObj;
         }
 
+        /**
+        *make a query request for relation between platforms
+        * @param dataName name whit query data
+        * @return  dataObj contains param RESULT , RESULT may be SUCCESS or ERROR
+        * */
         @RequestMapping("/queryPlatformRelation")
         public @ResponseBody JSONObject queryPlatformRelation(@RequestParam("dataName")String dataName){
                 dataObj = provService.queryPlatformRelation(dataName);
                 String queryId = dataObj.getString(QUERY_ID.name());
-                if (dataObj.get(RESULT) == SUCCESS){
+                if (SUCCESS.equals(dataObj.getString(RESULT.toString()))){
+                        logger.debug("Relations between platform is " + relationMap.get(queryId));
                         DrawImageUtil.draw(relationMap.get(queryId),queryId);
                 }
                 relationMap.remove(queryId);
                 return dataObj;
         }
 
+        /**
+         *query relations with other platform, and make a query request to up stream and down stream
+         * @param param receivedParam
+         * @return dataObj contains param RESULT , RESULT may be SUCCESS or ERROR
+         */
         @RequestMapping("/queryRelation")
-        public @ResponseBody JSONObject queryRelation(@RequestParam("ReceivedParam")String param){
+        public @ResponseBody JSONObject queryRelation(@RequestParam("receivedParam")String param){
                 dataObj = provService.queryRelation(param);
                 return dataObj;
         }
 
+
+        /**
+         * get relations when other platform report their relations
+         * @param report  relations in other platform. include two key {queryId,relations}
+         * @return dataObj
+         */
         @RequestMapping("/reportRelation")
         public @ResponseBody JSONObject reportRelation(@RequestParam("report")String report){
                 JSONObject reportParam = JSONObject.fromObject(report);
-                if (relationMap == null){
-                        relationMap = new HashMap<>();
-                }
                 String queryId = reportParam.getString(QUERY_ID.name());
                 String relations = reportParam.getString(RELATIONS.name());
                 List<String> relation = relationMap.get(queryId);

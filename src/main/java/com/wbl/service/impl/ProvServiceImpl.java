@@ -2,6 +2,7 @@ package com.wbl.service.impl;
 
 import com.wbl.dao.ProvDao;
 import com.wbl.domain.*;
+import com.wbl.modal.Enum.ResultType;
 import com.wbl.modal.PlatformInfo;
 import com.wbl.service.ProvService;
 import com.wbl.util.GraphvizUtil;
@@ -45,13 +46,12 @@ public class ProvServiceImpl implements ProvService {
                         return dataObj;
                 }
                 SendParam sendParam = makeSendParam(dataInfo.getDataId());
-                provDao.save(sendParam);
+                //provDao.save(sendParam);
                 String param = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
-                logger.info(PlatformInfo.PLATFORM_QUERY_URL);
                 JSONObject result = JSONObject.fromObject(HttpRequestUtil.doPostRequest(PlatformInfo.PLATFORM_QUERY_URL,param));
-                logger.info(result);
+                logger.debug("QueryPlatformRelation result " + result);
                 dataObj.put(QUERY_ID,sendParam.getQueryFrom()+"_" + sendParam.getQueryFor() + "_" + sendParam.getRequestId());
-                if (result.get(RESULT) == ERROR){
+                if (ERROR.equals(result.getString(RESULT.toString()))){
                         dataObj.put(RESULT,ERROR);
                         dataObj.put(MESSAGE,"Query with queryId " + dataObj.get(QUERY_ID) + " is failed");
                 }else {
@@ -80,15 +80,18 @@ public class ProvServiceImpl implements ProvService {
                         report.put(RELATIONS,relations);
                         String requestPram = "report=" + report.toString();
                         JSONObject reportResult = JSONObject.fromObject(HttpRequestUtil.doPostRequest(receivedParam.getReportUrl(),requestPram));
-                        if (reportResult.get(RESULT) == ERROR){
+                        if (ERROR.equals(reportResult.getString(RESULT.toString()))){
                                 logger.warn("QueryId with " + queryId + " report to " + receivedParam.getReportUrl() + " is failed");
                                 dataObj.put(RESULT,ERROR);
                         }else {
+                                logger.debug("QueryId with " + queryId + " report to " + receivedParam.getReportUrl() + " is success");
                                 if (!queryAdjacentRelation(receivedParam)){
                                         logger.warn("QueryId with " + queryId + "query adjacent platform relation is failed");
                                         dataObj.put(RESULT,ERROR);
-                                }else
+                                }else{
+                                        logger.debug("QueryId with " + queryId + "query adjacent platform relation is success");
                                         dataObj.put(RESULT,SUCCESS);
+                                }
                         }
                 }
                 return dataObj;
@@ -121,9 +124,9 @@ public class ProvServiceImpl implements ProvService {
                         String requestParam = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
                         String queryUrl = source.getUrl();
                         if (queryUrl != null){
-                                logger.info("Query for up stream url: " + queryUrl);
+                                logger.debug("Query for up stream url: " + queryUrl);
                                 JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(queryUrl,requestParam));
-                                if (response.get(RESULT) == ERROR){
+                                if (ERROR.equals(response.getString(RESULT.toString()))){
                                         String queryId = param.getQueryFrom() + "_" + param.getQueryFor() + "_" + param.getRequestId();
                                         logger.error("QueryId with " + queryId +"  query for upStream[" + source.getSource() +"] is failed" );
                                         return false;
@@ -146,9 +149,9 @@ public class ProvServiceImpl implements ProvService {
                         String requestParam = "receivedParam=" + JSONObject.fromObject(sendParam).toString();
                         String queryUrl = next.getUrl();
                         if (queryUrl != null){
-                                logger.info("Query for down Stream url: " + queryUrl);
+                                logger.debug("Query for down Stream url: " + queryUrl);
                                 JSONObject response = JSONObject.fromObject(HttpRequestUtil.doPostRequest(queryUrl,requestParam));
-                                if (response.get(RESULT) == ERROR){
+                                if (ERROR.equals(response.getString(RESULT.toString()))){
                                         String queryId = param.getQueryFrom() + "_" + param.getQueryFor() + "_" + param.getRequestId();
                                         logger.error("QueryId with " + queryId +"  query for downStream["  + next.getNext() +"] is failed" );
                                         return false;
@@ -276,9 +279,19 @@ public class ProvServiceImpl implements ProvService {
                 param.setQueryFor(dataId);
                 param.setQueryFrom(PlatformInfo.PLATFORM_NAME);
                 param.setReportUrl(PlatformInfo.PLATFORM_REPORT_URL);
-                Format format = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+                Format format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 param.setRequestId(format.format(new Date()));
                 return param;
+        }
+
+        public static void main(String[] args) {
+                /*ReceivedParam receivedParam = new ReceivedParam();
+                String param = "receivedParam=" + JSONObject.fromObject(receivedParam).toString();
+                System.out.println(HttpRequestUtil.doPostRequest("http://10.103.241.73:8090/BigDataBeta/prov/queryRelation",param));*/
+                JSONObject dataObj= new JSONObject();
+                dataObj.put(RESULT,SUCCESS);
+                System.out.println(SUCCESS.equals(dataObj.getString(RESULT.toString())));
+                System.out.println(RESULT);
         }
 
 }
