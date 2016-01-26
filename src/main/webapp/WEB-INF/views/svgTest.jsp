@@ -7,67 +7,49 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+<%@include file="include/header.jsp"%>
 <head>
         <title></title>
 </head>
 <body>
-<svg width="100%" height="100%" version="1.1"
-     xmlns="http://www.w3.org/2000/svg">
-
-        <script>
-                function create_a(evt)
-                {
-                        alert(123);
-                        var left = evt.screenX;
-
-
-                        var top = evt.screenY;
-
-
-                        var client_x = evt.clientX;
-                        var client_y = evt.clientY;
-
-
-
-                        alert("left="+left);
-                        alert("top="+top);
-
-                        alert("client_x=" + client_x);
-                        alert("client_y=" + client_y);
-
-                        var obj = document.elementFromPoint(left,top);
-                        alert("obj=" + obj);
-                        alert("obj.id=" + obj.id);
-                        alert("obj.nodeName=" + obj.nodeName);
-
-                        var obj2 = document.elementFromPoint(client_x,client_y);
-                        alert("obj2=" + obj2);
-                        alert("obj2.id=" + obj2.id);
-                        alert("obj2.nodeName=" + obj2.nodeName);
-
-
-
-                        /*
-                         //var SVGDoc=evt.getTarget().getOwnerDocument();
-                         var SVGDoc=evt.target.ownerDocument;
-                         var txt=SVGDoc.getElementById("txt");
-                         var link=SVGDoc.createElement("a");
-                         var text_node=SVGDoc.createTextNode("LINK");
-
-                         link.setAttributeNS(
-                         "http://www.w3.org/1999/xlink",
-                         "xlink:href",
-                         "http://www.w3schools.com");
-
-                         link.appendChild(text_node);
-                         txt.appendChild(link);
-                         */
-                }
-        </script>
-
-        <text id="txt" x="10" y="10">Click on the circle to create a ....</text>
-        <circle id = "circle_1" cx="20" cy="40" r="1.5em" style="fill:blue" onclick="create_a(evt)"/>
-
-</svg>
+        <div id="svgDiv" style="width: 100%;height: 100%;overflow: scroll"></div>
 </body>
+<%@include file="include/footer.jsp"%>
+<script type="text/javascript" src="resources/js/reference/jquery.graphviz.svg.js"></script>
+<script type="text/javascript">
+       $(function(){
+               var queryId = "platA_platA-1_2016-01-07-20-37-19";
+               var bath = $("base").attr("href");
+               $("#svgDiv").graphviz({
+                       url:"resources/provImage/test.svg",
+                       ready:function(){
+                               var gv = this;
+                               console.log("dd");
+                                gv.nodes().each(function(key,value){
+                                        var href = $(value).find("a").attr("xlink:href");
+                                        $(value).click(function(e){
+                                                e.preventDefault();
+                                                /*IE 跳转与google跳转有区别
+                                                * ie中跳转以当前路径开始跳转
+                                                * 若window.location.href = prov/...
+                                                * 则在IE中跳转地址为http://localhost:8090/BigDataBeta/prov/prov/...
+                                                * 在google中跳转地址为：http://localhost:8090/BigDataBeta/prov/...
+                                                * */
+                                                window.location.href = bath +"prov/showProvDetail?" + "queryUrl=" + href + "&queryId=" + queryId;
+                                                /*$.ajax({
+                                                        url:href + "?queryId=" +queryId + "&jsoncallback=?",
+                                                        success:function(response){
+                                                                var provs = response.PROVS;
+                                                                for(var i = 0; i < provs.length;i++ ){
+                                                                        console.log(provs[0]);
+                                                                }
+                                                        }
+                                                })*/
+                                        })
+                                })
+                       }
+               });
+
+       })
+</script>
 </html>

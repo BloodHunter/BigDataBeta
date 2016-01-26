@@ -31,7 +31,7 @@
                                         var temp = '<embed id="showRelation" src="resources/provImage/'+response.QUERY_ID +'.svg"' +' height="500" width="500" type="image/svg+xml" pluginspage="http://www.adobe.com/svg/viewer/install/"/>';
                                         $("#showRelation").append(temp);
                                 }else{
-                                        alert(response.MSG);
+                                        alert(response.MESSAGE);
                                 }
                         });
                         return false;
