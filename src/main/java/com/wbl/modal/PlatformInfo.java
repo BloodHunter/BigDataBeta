@@ -14,6 +14,7 @@ public class PlatformInfo {
         public static  String PLATFORM_NAME ;
         public static  String PLATFORM_REPORT_URL ;
         public static  String PLATFORM_QUERY_URL;
+        public static String PLATFORM_QUERY_PROV_URL;
         static {
                 try {
                         if (prop == null){
@@ -23,6 +24,7 @@ public class PlatformInfo {
                         PLATFORM_NAME = prop.getProperty("platformName");
                         PLATFORM_QUERY_URL = prop.getProperty("queryUrl");
                         PLATFORM_REPORT_URL = prop.getProperty("reportUrl");
+                        PLATFORM_QUERY_PROV_URL = prop.getProperty("queryProvUrl");
                 }catch (IOException e){
                         logger.error("Load platformInfo properties error " + e);
                 }

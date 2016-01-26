@@ -65,7 +65,7 @@ public class ProvRecord {
 
 								process = pFactory.newActivity(qn(provRecord.getActivity()));
 
-								time= stringToXMLGregorianCalendar(provRecord.getTime());
+								time= stringToXMLGregorianCalendar(provRecord.getTime().toString());
 								gene = pFactory.newWasGeneratedBy(null, currentData.getId(), process.getId(), time, null);
 
 								use = pFactory.newUsed(process.getId(), originalData.getId());
@@ -89,7 +89,7 @@ public class ProvRecord {
 								currentData = pFactory.newEntity(qn(provRecord.getEntity()));
 								agent = pFactory.newAgent(qn(provRecord.getAgent()));
 								process = pFactory.newActivity(qn(provRecord.getActivity()));
-								time= stringToXMLGregorianCalendar(provRecord.getTime());
+								time= stringToXMLGregorianCalendar(provRecord.getTime().toString());
 								gene = pFactory.newWasGeneratedBy(null, currentData.getId(), process.getId(), time, null);
 								attr = pFactory.newWasAttributedTo(null,
 										currentData.getId(),

@@ -25,6 +25,7 @@ public interface ProvDao {
         boolean save(ReceivedParam receivedParam);
         boolean save(SendParam sendParam);
 
+        List getProvs(String dataId);
         List<Next> getNext(String dataID);
         List<Source> getSource(String dataID);
         List<RelationInfo> getAncestor(String dataID);
@@ -35,5 +36,10 @@ public interface ProvDao {
 
         ReceivedParam getReceivedParam(ReceivedParam param);
         SendParam getSendParam(SendParam param);
+
+        List getDataIdFromParam(String queryFrom,String queryFor,String requestId);
+
+        long getTimesForDownload(String dataId);
+        Prov getDataSourceInfo(String dataId);
 
 }

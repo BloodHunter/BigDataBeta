@@ -1,8 +1,11 @@
 package com.wbl.util;
 
 import com.wbl.modal.PlatformNode;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +39,23 @@ public class DrawImageUtil {
                 draw(relations,out);
         }
 
+        public static byte[] draw(String dotString){
+                File out = null;
+                GraphvizUtil gv = new GraphvizUtil();
+                try {
+                        out = File.createTempFile("temp",".svg");
+                        gv.add(gv.start_graph());
+                        gv.add(dotString);
+                        gv.add(gv.end_graph());
+                        gv.writeGraphToFile(gv.getGraph(gv.getDotSource(),IMAGE_TYPE),out);
+                        return IOUtils.toByteArray(new FileInputStream(out));
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }finally {
+                        out.delete();
+                }
+                return null;
+        }
         /*public static void draw(List<PlatformNode>platformNodes,File out){
                 GraphvizUtil gv = new GraphvizUtil();
                 gv.add(gv.start_graph());

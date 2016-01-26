@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface PageQueryDao {
         List<Prov> getProv(@Param("startRow")int startRow,@Param("endRow")int endRow);
+        List<Prov> getProvByDataId(@Param("dataId")String dataId,@Param("startRow")int startRow,@Param("rowLength")int rowLength);
+        int getPagesByDataIdFromProv(@Param("dataId")String dataId);
 }

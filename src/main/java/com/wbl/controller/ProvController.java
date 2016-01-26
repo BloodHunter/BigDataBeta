@@ -6,22 +6,29 @@ import com.wbl.domain.DataInfo;
 import com.wbl.domain.Prov;
 import com.wbl.domain.ReceivedParam;
 import com.wbl.modal.Enum.ResultType;
+import com.wbl.modal.Page;
 import com.wbl.modal.ProvImage;
+import com.wbl.modal.exception.RequestException;
 import com.wbl.service.ProvService;
 import com.wbl.util.DrawImageUtil;
 import com.wbl.util.HttpRequestUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 import static com.wbl.modal.Enum.ResultType.*;
 import static com.wbl.modal.Enum.QueryMessage.*;
@@ -55,7 +62,7 @@ public class ProvController {
         }
 
         @RequestMapping("/queryProvByName")
-        public @ResponseBody JSONObject queryProvByName(@RequestParam("dataName") String dataName){
+        public @ResponseBody JSONObject queryProvByName( @RequestParam("dataName") String dataName){
                 List<Prov> list = new ArrayList<Prov>();
                 list = provDao.getProv(1,10);
                 ProvImage image = new ProvImage(list);
@@ -155,9 +162,96 @@ public class ProvController {
                         relation = new ArrayList<>();
                 if (relations != null && !relation.contains(relations)){
                         relation.add(relations);
-                        relationMap.put(queryId,relation);
+                        relationMap.put(queryId, relation);
                 }
-                dataObj.put(RESULT,SUCCESS);
+                dataObj.put(RESULT, SUCCESS);
                 return dataObj;
+        }
+
+
+        /*@RequestMapping("/queryProv")
+        public @ResponseBody JSONObject queryProv(@RequestParam("queryId")String queryId,HttpServletResponse response){
+                response.setHeader("Access-Control-Allow-Origin","*");
+                response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+                response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+                return provService.queryProv(queryId);
+        }*/
+
+        @RequestMapping("/showProvDetail")
+        public ModelAndView showProvDetail(@RequestParam("queryUrl") String url,
+                                     @RequestParam("queryId")String queryId){
+                //return svg json
+                /*ModelAndView mav = new ModelAndView();
+                mav.setViewName("showProvDetail");
+                try {
+                        String json = HttpRequestUtil.doPostRequest(url,"queryId=" + queryId);
+                        mav.addObject("json",json);
+                        System.out.println(json);
+                } catch (RequestException e) {
+                        logger.error("Make json from " + url + " is failed");
+                        logger.error("Error message: " + e.getMessage());
+                }
+                return mav;*/
+
+                ModelAndView mav = new ModelAndView();
+                mav.setViewName("showProvDetail");
+                mav.addObject("queryId",queryId);
+                mav.addObject("url",url);
+                return mav;
+        }
+
+        @RequestMapping("/produceSvgJson")
+        public @ResponseBody JSONObject produceSvgJson(@RequestParam("queryId")String queryId){
+                return provService.produceSvgJson(queryId);
+        }
+
+        /*@RequestMapping("/produceSvgByDotString")
+        public ResponseEntity<byte[]> produceSvgByDotString(@RequestParam("queryId")String queryId){
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentDispositionFormData("attachment", queryId);
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                byte[] svg = DrawImageUtil.draw(provService.produceDotString(queryId));
+                return new ResponseEntity<byte[]>(svg,headers, HttpStatus.OK);
+        }*/
+
+        @RequestMapping("/produceSvgByDotString")
+        public HttpEntity produceSvgByDotString(@RequestParam("queryId")String queryId,HttpServletResponse response){
+                byte[] svg = DrawImageUtil.draw(provService.produceDotString(queryId));
+                response.setHeader("Access-Control-Allow-Origin","*");
+                response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+                response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+                InputStream in = new ByteArrayInputStream(svg);
+                try {
+                        StreamUtils.copy(in,response.getOutputStream());
+                        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+                return new ResponseEntity(HttpStatus.OK);
+        }
+
+        @RequestMapping("/showMoreDetail")
+        public ModelAndView showMoreDetail(@RequestParam("queryUrl")String url,
+                                           @RequestParam("dataName")String dataName){
+                ModelAndView view = new ModelAndView();
+                view.setViewName("showMoreDetail");
+                view.addObject("queryUrl", url);
+                view.addObject("dataName", dataName);
+                return view;
+        }
+
+        @RequestMapping("/getProvByPage")
+        public @ResponseBody JSONObject getProvByPage(@RequestParam("dataName")String dataName,
+                                                      @RequestParam("currentPage")String currentPage,
+                                                      HttpServletResponse response){
+                response.setHeader("Access-Control-Allow-Origin","*");
+                response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+                response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+                return provService.getProvByPage(dataName,currentPage);
+        }
+
+        @RequestMapping("/showProvDetail2")
+        public String showProvDetail2(){
+                return "showProvDetail2";
         }
 }

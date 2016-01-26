@@ -18,7 +18,7 @@ public class GraphvizUtil {
         public GraphvizUtil(){}
 
         public String start_graph(){
-                return "digraph G {";
+                return "digraph G {\n" + "concentrate=true\n node[shape=circle]\n";
         }
 
         public String end_graph(){
@@ -153,14 +153,19 @@ public class GraphvizUtil {
         public static void main(String[] args) {
                 GraphvizUtil gv = new GraphvizUtil();
                 gv.add(gv.start_graph());
-                gv.add("A");
-                gv.add("A");
-                gv.add("A");
-                gv.add("A->B[URL=\"http://www.baidu.com\"]");
-                gv.add("A->B");
-                gv.add("A->B");
-                gv.add("B->C");
+                gv.add("concentrate=true");
+                gv.add("platA[URL=\"http://10.103.241.73:8090/BigDataBeta/prov/produceSvgByDotString\"]");
+                gv.add("platA->platB");
+                gv.add("platA->platB");
+                gv.add("platA->platB");
+                gv.add("platB->platC");
                 gv.add(gv.end_graph());
                 gv.writeGraphToFile(gv.getGraph(gv.getDotSource(),"svg"),"F:\\provtest\\test.svg");
+                /*GraphvizUtil gv = new GraphvizUtil();
+                gv.add(gv.start_graph());
+                gv.add("data1->data3");
+                gv.add("data2->data3");
+                gv.add(gv.end_graph());
+                gv.writeGraphToFile(gv.getGraph(gv.getDotSource(),"svg"),"F:\\provtest\\test2.svg");*/
         }
 }

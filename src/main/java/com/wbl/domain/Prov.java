@@ -2,6 +2,8 @@ package com.wbl.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Simple_love on 2015/10/26.
@@ -9,31 +11,23 @@ import java.io.Serializable;
 @Entity
 @Table(name = "prov")
 public class Prov implements Serializable{
-        @Id
-        @Column(name = "pid")
         private int pid;
 
-        @Column(name = "prefix")
         private String prefix;
 
-        @Column(name = "entity")
         private String entity;
 
-        @Column(name = "agent")
         private String agent;
 
-        @Column(name = "activity")
         private String activity;
 
-        @Column(name = "used")
         private String used;
 
-        @Column(name = "time")
-        private String time;
+        private Timestamp time;
 
         public Prov(){}
 
-        public Prov(String prefix, String entity, String agent, String activity, String used, String time) {
+        public Prov(String prefix, String entity, String agent, String activity, String used, Timestamp time) {
                 this.prefix = prefix;
                 this.entity = entity;
                 this.agent = agent;
@@ -42,6 +36,9 @@ public class Prov implements Serializable{
                 this.time = time;
         }
 
+
+        @Id
+        @Column(name = "pid")
         public int getPid() {
                 return pid;
         }
@@ -50,6 +47,8 @@ public class Prov implements Serializable{
                 this.pid = pid;
         }
 
+        @Basic
+        @Column(name = "prefix")
         public String getPrefix() {
                 return prefix;
         }
@@ -58,6 +57,8 @@ public class Prov implements Serializable{
                 this.prefix = prefix;
         }
 
+        @Basic
+        @Column(name = "entity")
         public String getEntity() {
                 return entity;
         }
@@ -66,6 +67,8 @@ public class Prov implements Serializable{
                 this.entity = entity;
         }
 
+        @Basic
+        @Column(name = "agent")
         public String getAgent() {
                 return agent;
         }
@@ -74,6 +77,8 @@ public class Prov implements Serializable{
                 this.agent = agent;
         }
 
+        @Basic
+        @Column(name = "activity")
         public String getActivity() {
                 return activity;
         }
@@ -82,6 +87,8 @@ public class Prov implements Serializable{
                 this.activity = activity;
         }
 
+        @Basic
+        @Column(name = "used")
         public String getUsed() {
                 return used;
         }
@@ -90,11 +97,13 @@ public class Prov implements Serializable{
                 this.used = used;
         }
 
-        public String getTime() {
+        @Basic
+        @Column(name = "time")
+        public Timestamp getTime() {
                 return time;
         }
 
-        public void setTime(String time) {
+        public void setTime(Timestamp time) {
                 this.time = time;
         }
 
@@ -127,14 +136,15 @@ public class Prov implements Serializable{
 
         @Override
         public String toString() {
-                return "Prov{" +
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                return "{" +
                         "pid=" + pid +
                         ", prefix='" + prefix + '\'' +
                         ", entity='" + entity + '\'' +
                         ", agent='" + agent + '\'' +
                         ", activity='" + activity + '\'' +
                         ", used='" + used + '\'' +
-                        ", time='" + time + '\'' +
+                        ", time='" + sdf.format(time) + '\'' +
                         '}';
         }
 }

@@ -149,11 +149,11 @@ public class ProvImage {
         }
 
         public static void main(String[] args){
-                List<Prov> provs = new ArrayList<Prov>();
+               /* List<Prov> provs = new ArrayList<Prov>();
                 String time = "2015-10-27 09:32:00";
-                /*Platform A*/
+                *//*Platform A*//*
                 provs.add(new Prov("platA","platA-1","userA-1",UPLOAD.name(),null,time));
-                /*Platform B*/
+                *//*Platform B*//*
                 provs.add(new Prov("platB","platB-1","userB-1",UPLOAD.name(),null,time));
                 provs.add(new Prov("platB","platA-1","platB",DOWNLOAD.name(),"platA:platA-1",time));
                 provs.add(new Prov("platB","platB-2","userB-2",AGGREGATION.name(),"platA:platA-1",time));
@@ -162,23 +162,23 @@ public class ProvImage {
                 provs.add(new Prov("platB","platB-4","platD",EXPORT.name(),"platB:platB-2",time));
                 provs.add(new Prov("platB","platB-5","platE",EXPORT.name(),"platB:platB-2",time));
 
-                /*Platform C*/
+                *//*Platform C*//*
                 provs.add(new Prov("platC","platB-3","platC",IMPORT.name(),"platB:platB-3",time));
 
-                /*Platform D*/
+                *//*Platform D*//*
                 provs.add(new Prov("platD","platB-4","platD",IMPORT.name(),"platB:platB-4",time));
 
-                /*Platform E*/
+                *//*Platform E*//*
                 provs.add(new Prov("platE","platB-5","platE",IMPORT.name(),"platB:platB-5",time));
 
-                /*Platform F*/
+                *//*Platform F*//*
                 provs.add(new Prov("platF","platA-1","platF",DOWNLOAD.name(),"platA:platA-1",time));
                 provs.add(new Prov("platF","platB-3","platF",DOWNLOAD.name(),"platC:platB-3",time));
                 provs.add(new Prov("platF","platF-2","userF-1",AGGREGATION.name(),"platF:platB-3",time));
                 provs.add(new Prov("platF","platF-2","userF-1",AGGREGATION.name(),"platF:platA-1",time));
 
                 ProvImage image = new ProvImage(provs,10);
-                image.draw("other1");
+                image.draw("other1");*/
         }
 
 }

@@ -1,8 +1,10 @@
 package com.wbl.util;
 
+import com.wbl.modal.exception.RequestException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -159,13 +161,15 @@ public class HttpRequestUtil {
                 return responseResult.toString();
         }
 
-        public static  String doPostRequest(String url,String params){
+        public static  String doPostRequest(String url,String params) throws RequestException {
                 PrintWriter out = null;
                 BufferedReader in = null;
                 String result = "";
+                HttpURLConnection conn = null;
+                int code = 200;
                 try {
                         URL realUrl = new URL(url);
-                        URLConnection conn = realUrl.openConnection();
+                         conn = (HttpURLConnection) realUrl.openConnection();
                         conn.setRequestProperty("accept", "*/*");
                         conn.setRequestProperty("connection", "Keep-Alive");
                         conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
@@ -178,15 +182,16 @@ public class HttpRequestUtil {
                         //System.out.println(params);
                         out.print(params);
                         out.flush();
-
+                        code = conn.getResponseCode();
                         in = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
                         String line;
                         while ((line = in.readLine()) != null) {
                                 result += "\n" + line;
                         }
-                } catch (Exception e) {
-                        logger.error("Do post request error: " + e);
-                        //e.printStackTrace();
+                } catch (ConnectException e) {
+                        throw new RequestException("Connect to URL :" + url +" timeout");
+                }catch (IOException e){
+                        throw new RequestException("Server returned HTTP response code: " + code +" for URL" + url);
                 }
                 finally {
                         try {
@@ -279,6 +284,7 @@ public class HttpRequestUtil {
         public static void main(String[] args) throws Exception{
               /*  System.out.println(HttpRequestUtil.doGetRequest("http://www.baidu.com", null));
                 System.out.println(HttpRequestUtil.doPostRequest("http://www.baidu.com",null));*/
-                System.out.println(uploadFile("http://localhost:8080/BigDataBeta/prov/imageTest","other1-0.jpg"));
+                //System.out.println(uploadFile("http://localhost:8080/BigDataBeta/prov/imageTest","other1-0.jpg"));
+                System.out.println(HttpRequestUtil.doPostRequest("http://localhost:8080/BigDataBeta/prov/queryRelation",""));
         }
 }

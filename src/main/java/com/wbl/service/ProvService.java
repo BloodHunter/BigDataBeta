@@ -3,6 +3,8 @@ package com.wbl.service;
 import com.wbl.domain.ReceivedParam;
 import net.sf.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by Simple_love on 2016/1/4.
  */
@@ -14,6 +16,13 @@ public interface ProvService {
 
         JSONObject queryPlatformRelation(String dataName);
         JSONObject queryRelation(String param);
+
+        JSONObject queryProv(String queryId);
+        List queryProvByName(String dataName);
+        JSONObject getProvByPage(String dataName,String currentPage);
+
+        JSONObject produceSvgJson(String queryId);
+        String produceDotString(String queryId);
 
         String getRelationBetweenPlatform(String dataId);
 

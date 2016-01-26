@@ -2,6 +2,7 @@ package com.wbl.dao.impl;
 
 import com.wbl.dao.ProvDao;
 import com.wbl.domain.*;
+import com.wbl.modal.Enum.Activity;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -130,6 +131,11 @@ public class ProvDaoImpl implements ProvDao {
         }
 
         @Override
+        public List getProvs(String dataId) {
+                return template.find("FROM Prov where entity = ?",dataId);
+        }
+
+        @Override
         public List<Next> getNext(String dataID) {
                 String query = "From Next where dataId = ?";
                 return (List<Next>) template.find(query,dataID);
@@ -169,7 +175,7 @@ public class ProvDaoImpl implements ProvDao {
         public DataInfo getDataInfoByName(String dataName) {
                 List<DataInfo> result = (List<DataInfo>) template.find("from DataInfo where dataName = ?",dataName);
                 if (result.isEmpty()){
-                        logger.warn("DataInfo with name[" + dataName  +"] is not exist");
+                        logger.warn("DataInfo with name[" + dataName + "] is not exist");
                         return null;
                 }
                 else
@@ -200,6 +206,35 @@ public class ProvDaoImpl implements ProvDao {
                         return null;
                 }else
                         return (SendParam) result.get(0);
+        }
+
+        @Override
+        public List getDataIdFromParam(String queryFrom, String queryFor, String requestId) {
+                String query = "Select dataId from ReceivedParam where queryFrom = ? and queryFor = ?" +
+                        "and requestId = ?";
+                return template.find(query,queryFrom,queryFor,requestId);
+        }
+
+        @Override
+        public long getTimesForDownload(String dataId) {
+                String query = "select count(*) from Prov where entity = ? and activity = ?";
+                List result = template.find(query,dataId, Activity.DOWNLOAD.toString());
+                if (result.isEmpty()){
+                        return 0;
+                }else {
+                        return (long) result.get(0);
+                }
+        }
+
+        @Override
+        public Prov getDataSourceInfo(String dataId) {
+                String query = "from Prov where entity = ? and activity = ?";
+                List result = template.find(query,dataId,Activity.UPLOAD.toString());
+                if (result.isEmpty()){
+                        return null;
+                }else {
+                        return (Prov) result.get(0);
+                }
         }
 
         private boolean isExist(Next next){
