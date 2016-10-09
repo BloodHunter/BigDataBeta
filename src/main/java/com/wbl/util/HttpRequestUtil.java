@@ -18,28 +18,28 @@ public class HttpRequestUtil {
         private static Logger logger = Logger.getLogger(HttpRequestUtil.class);
 
         /*
-        * ·¢ÆğGETÇëÇó
-        * @param url ÇëÇóµÄURLµØÖ·
-        * @param paramMap ÇëÇó²ÎÊı
-        * @return Ô¶³ÌÏìÓ¦½á¹û
+        * å‘èµ·GETè¯·æ±‚
+        * @param url è¯·æ±‚çš„URLåœ°å€
+        * @param paramMap è¯·æ±‚å‚æ•°
+        * @return è¿œç¨‹å“åº”ç»“æœ
         * */
         public static String doGetRequest(String url, Map<String,String> paramMap){
-                //ÇëÇó·µ»ØµÄÏìÓ¦½á¹û
+                //è¯·æ±‚è¿”å›çš„å“åº”ç»“æœ
                 StringBuilder responseResult = new StringBuilder();
 
-                //¶ÁÈ¡HttpÇëÇóµÄÏìÓ¦Á÷£¬¼´·şÎñÆ÷ÒÔÁ÷µÄĞÎÊ½·µ»ØÏìÓ¦½á¹û
+                //è¯»å–Httpè¯·æ±‚çš„å“åº”æµï¼Œå³æœåŠ¡å™¨ä»¥æµçš„å½¢å¼è¿”å›å“åº”ç»“æœ
                 BufferedReader reader = null;
 
                 StringBuilder sb = new StringBuilder();
 
-                //·â×°ºóµÄÇëÇó²ÎÊı
+                //å°è£…åçš„è¯·æ±‚å‚æ•°
                 String params = "";
 
                 try {
-                        //Èç¹ûÓĞÇëÇó²ÎÊı£¬Ôò¶ÔÇëÇó²ÎÊı½øĞĞ·â×°
+                        //å¦‚æœæœ‰è¯·æ±‚å‚æ•°ï¼Œåˆ™å¯¹è¯·æ±‚å‚æ•°è¿›è¡Œå°è£…
                         if (paramMap!=null && !paramMap.isEmpty()){
                                 for (String name:paramMap.keySet()){
-                                        //¶ÔÇëÇó²ÎÊı½øĞĞ±àÂë£¬±ÜÃâÂÒÂë
+                                        //å¯¹è¯·æ±‚å‚æ•°è¿›è¡Œç¼–ç ï¼Œé¿å…ä¹±ç 
                                         sb.append(name).append("=").append(java.net.URLEncoder.encode(paramMap.get(name),"UTF-8"));
                                         sb.append("&");
                                 }
@@ -49,27 +49,27 @@ public class HttpRequestUtil {
 
                         String full_url = url + "?" + params;
 
-                        //´´½¨URL¶ÔÏó
+                        //åˆ›å»ºURLå¯¹è±¡
                         URL connectUrl= new URL(full_url);
 
-                        //´ò¿ªURLÁ¬½Ó
+                        //æ‰“å¼€URLè¿æ¥
                         HttpURLConnection httpURLConnection = (HttpURLConnection) connectUrl.openConnection();
 
-                        //ÉèÖÃhttpÇëÇóÍ·ÖĞµÄÊôĞÔ
+                        //è®¾ç½®httpè¯·æ±‚å¤´ä¸­çš„å±æ€§
                         httpURLConnection.setRequestProperty("Accept","*/*");
                         httpURLConnection.setRequestProperty("Connection","keep-alive");
                         httpURLConnection.setRequestProperty("User Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
 
                         httpURLConnection.connect();
 
-                        //±£´æhttpÏìÓ¦µÄÍ·²¿
+                        //ä¿å­˜httpå“åº”çš„å¤´éƒ¨
                         Map<String,List<String>> responseHeader = httpURLConnection.getHeaderFields();
 
                         for (String key:responseHeader.keySet()){
                                 System.out.println(key + " : " + responseHeader.get(key));
                         }
 
-                        //¶¨ÒåBufferedReaderÊäÈëÁ÷À´¶ÁÈ¡URLµÄÏìÓ¦,²¢ÉèÖÃ±àÂë·½Ê½
+                        //å®šä¹‰BufferedReaderè¾“å…¥æµæ¥è¯»å–URLçš„å“åº”,å¹¶è®¾ç½®ç¼–ç æ–¹å¼
                         reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(),"UTF-8"));
                         String line;
                         while ((line = reader.readLine())!=null){
@@ -89,11 +89,11 @@ public class HttpRequestUtil {
         }
 
         /*
-        * ·¢ÆğPOSTÇëÇó
+        * å‘èµ·POSTè¯·æ±‚
         *
-        *@param url ÇëÇóµÄURLµØÖ·
-        * @param paramMap ÇëÇó²ÎÊı
-        * @return Ô¶³ÌÏìÓ¦½á¹û
+        *@param url è¯·æ±‚çš„URLåœ°å€
+        * @param paramMap è¯·æ±‚å‚æ•°
+        * @return è¿œç¨‹å“åº”ç»“æœ
         * */
         public static String doPostRequest(String url, Map<String,String> paramMap){
                 StringBuilder responseResult = new StringBuilder();
@@ -114,35 +114,35 @@ public class HttpRequestUtil {
                         URL connectUrl = new URL(url);
                         HttpURLConnection httpURLConnection = (HttpURLConnection) connectUrl.openConnection();
 
-                        //ÉèÖÃhttpÇëÇóÍ·ÖĞµÄÊôĞÔ
+                        //è®¾ç½®httpè¯·æ±‚å¤´ä¸­çš„å±æ€§
                         httpURLConnection.setRequestProperty("Accept","*/*");
                         httpURLConnection.setRequestProperty("Connection", "keep-alive");
                         httpURLConnection.setRequestProperty("User Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
 
                         /*
-                        * URL Á¬½Ó¿ÉÓÃÓÚÊäÈëºÍ/»òÊä³ö¡£Èç¹û´òËãÊ¹ÓÃ URL Á¬½Ó½øĞĞÊäÈë£¬Ôò½« DoInput ±êÖ¾ÉèÖÃÎª true£»
-                        * Èç¹û´òËãÊ¹ÓÃ URL Á¬½Ó½øĞĞÊä³ö£¬Ôò½« DoOutput ±êÖ¾ÉèÖÃÎª true£»
+                        * URL è¿æ¥å¯ç”¨äºè¾“å…¥å’Œ/æˆ–è¾“å‡ºã€‚å¦‚æœæ‰“ç®—ä½¿ç”¨ URL è¿æ¥è¿›è¡Œè¾“å…¥ï¼Œåˆ™å°† DoInput æ ‡å¿—è®¾ç½®ä¸º trueï¼›
+                        * å¦‚æœæ‰“ç®—ä½¿ç”¨ URL è¿æ¥è¿›è¡Œè¾“å‡ºï¼Œåˆ™å°† DoOutput æ ‡å¿—è®¾ç½®ä¸º trueï¼›
                         * */
                         httpURLConnection.setDoInput(true);
                         httpURLConnection.setDoOutput(true);
 
-                        // »ñÈ¡HttpURLConnection¶ÔÏó¶ÔÓ¦µÄÊä³öÁ÷
+                        // è·å–HttpURLConnectionå¯¹è±¡å¯¹åº”çš„è¾“å‡ºæµ
                         out = new PrintWriter(httpURLConnection.getOutputStream());
                         /*
-                        * POST·½Ê½Ìá½»²ÎÊı£¬²ÎÊıÊÇÔÚÇëÇóÌåÖĞ·¢ËÍµÄ£¬¾ÍÊÇºÍGETµÄÇø±ğ¡£
+                        * POSTæ–¹å¼æäº¤å‚æ•°ï¼Œå‚æ•°æ˜¯åœ¨è¯·æ±‚ä½“ä¸­å‘é€çš„ï¼Œå°±æ˜¯å’ŒGETçš„åŒºåˆ«ã€‚
                         * */
-                        //·¢ËÍÇëÇó²ÎÊı
+                        //å‘é€è¯·æ±‚å‚æ•°
                         out.write(params);
 
                         out.flush();
 
                         httpURLConnection.connect();
 
-                        //¶¨ÒåBufferedReaderÊäÈëÁ÷À´¶ÁÈ¡URLµÄÏìÓ¦£¬ÉèÖÃ±àÂë·½Ê½
+                        //å®šä¹‰BufferedReaderè¾“å…¥æµæ¥è¯»å–URLçš„å“åº”ï¼Œè®¾ç½®ç¼–ç æ–¹å¼
                         in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(),"UTF-8"));
                         String line;
 
-                        //// ¶ÁÈ¡·µ»ØµÄÄÚÈİ
+                        //// è¯»å–è¿”å›çš„å†…å®¹
                         while ((line = in.readLine()) != null){
                                 responseResult.append(line);
                         }
@@ -216,10 +216,10 @@ public class HttpRequestUtil {
         public static String uploadFile(String url,InputStream inputStream){
                 OutputStream out = null;
                 BufferedReader in = null;
-                // »»ĞĞ·û
+                // æ¢è¡Œç¬¦
                 final String newLine = "\r\n";
                 final String boundaryPrefix = "--";
-                // ¶¨ÒåÊı¾İ·Ö¸ôÏß
+                // å®šä¹‰æ•°æ®åˆ†éš”çº¿
                 String BOUNDARY = "========7d4a6d158c9";
                 try {
                         URL url1 = new URL(url);
@@ -237,15 +237,15 @@ public class HttpRequestUtil {
                         sb.append(boundaryPrefix);
                         sb.append(BOUNDARY);
                         sb.append(newLine);
-                        // ÎÄ¼ş²ÎÊı,photo²ÎÊıÃû¿ÉÒÔËæÒâĞŞ¸Ä
+                        // æ–‡ä»¶å‚æ•°,photoå‚æ•°åå¯ä»¥éšæ„ä¿®æ”¹
                         sb.append("Content-Disposition: form-data;name=\"photo\";filename=\"" + "test"
                                 + "\"" + newLine);
                         sb.append("Content-Type:application/octet-stream");
-                        // ²ÎÊıÍ·ÉèÖÃÍêÒÔºóĞèÒªÁ½¸ö»»ĞĞ£¬È»ºó²ÅÊÇ²ÎÊıÄÚÈİ
+                        // å‚æ•°å¤´è®¾ç½®å®Œä»¥åéœ€è¦ä¸¤ä¸ªæ¢è¡Œï¼Œç„¶åæ‰æ˜¯å‚æ•°å†…å®¹
                         sb.append(newLine);
                         sb.append(newLine);
 
-                        // ½«²ÎÊıÍ·µÄÊı¾İĞ´Èëµ½Êä³öÁ÷ÖĞ
+                        // å°†å‚æ•°å¤´çš„æ•°æ®å†™å…¥åˆ°è¾“å‡ºæµä¸­
                         out = new DataOutputStream(conn.getOutputStream());
                         out.write(sb.toString().getBytes());
 

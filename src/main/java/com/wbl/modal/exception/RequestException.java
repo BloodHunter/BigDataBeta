@@ -8,8 +8,8 @@ package com.wbl.modal.exception;
  * Catch exception when make a Http request
  */
 public class RequestException extends Exception {
-        public RequestException() {
-        }
+        /*public RequestException() {
+        }*/
 
         public RequestException(String message) {
                 super(message);

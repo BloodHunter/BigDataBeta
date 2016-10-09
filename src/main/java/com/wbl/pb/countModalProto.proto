@@ -1,0 +1,7 @@
+syntax = 'proto3';
+option outer_java_classname = "CountModalProto";
+
+message CountModal{
+    string name = 1;
+    int32 count = 2;
+}

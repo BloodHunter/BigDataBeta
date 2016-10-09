@@ -1,6 +1,9 @@
 package com.wbl.modal.time;
 
+import com.wbl.dao.DataQueryDao;
+import com.wbl.dao.UserDao;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 
@@ -13,15 +16,19 @@ import java.io.File;
  */
 public class DeleteFileJob {
         Logger logger = Logger.getLogger(DeleteFileJob.class);
+        @Autowired
+        private UserDao userDao;
+
         public void deleteFile(){
-                File dir = new File(getPath());
+                /*File dir = new File(getPath());
                 File[] files = dir.listFiles();
                 if (files != null){
                         for (File file : files){
                                 logger.info("It's time to delete file[" + file.getName() +"]");
                                 file.delete();
                         }
-                }
+                }*/
+                //System.out.println(userDao.findUserByName("wbl"));
         }
 
         private String getPath(){

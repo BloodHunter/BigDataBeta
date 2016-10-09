@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       <context:component-scan base-package="com.wbl"/>
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+              p:prefix="/WEB-INF/views/"
+              p:suffix=".jsp"/>
+
+        <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"
+              p:messageConverters-ref="messageConverters"/>
+        <util:list id="messageConverters">
+                <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                        <property name="supportedMediaTypes">
+                                <list>
+                                        <bean class="org.springframework.http.MediaType">
+                                                <constructor-arg value="text" />
+                                                <constructor-arg value="plain" />
+                                                <constructor-arg value="UTF-8" />
+                                        </bean>
+                                </list>
+                        </property>
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                        <property name="supportedMediaTypes">
+                                <list>
+                                        <value>application/json; charset=UTF-8</value>
+                                        <value>application/x-www-form-urlencoded; charset=UTF-8</value>
+                                </list>
+                        </property>
+                </bean>
+        </util:list>
+
+        <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+                <property name="maxUploadSize" value="104857600" />
+                <property name="maxInMemorySize" value="4096" />
+                <property name="defaultEncoding" value="UTF-8" />
+        </bean>
+
+        <bean id="exceptionResolver" class="com.wbl.modal.exception.GlobalExceptionResolver">
+                <property name="exceptionMappings">
+                        <props>
+                                <prop key="com.wbl.modal.exception.NotLoginException">account/login</prop>
+                                <prop key="com.wbl.modal.exception.NoFileUploadException">operate/upload</prop>
+                        </props>
+                </property>
+                <property name="exceptionAttribute" value="ex"/>
+        </bean>
+
+        <aop:aspectj-autoproxy/>
+        <bean class="com.wbl.aop.ProvAspect"/>
+
+        <mvc:annotation-driven />
+        <mvc:resources mapping="/resources/**" location="/WEB-INF/"/>
+</beans>

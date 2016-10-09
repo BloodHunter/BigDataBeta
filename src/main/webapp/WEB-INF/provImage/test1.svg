@@ -11,7 +11,7 @@
 <polygon fill="white" stroke="none" points="-4,4 -4,-256 245.095,-256 245.095,4 -4,4"/>
 <!-- platA -->
 <g id="node1" class="node"><title>platA</title>
-<ellipse fill="none" stroke="black" cx="210.547" cy="-234" rx="30.5947" ry="18"/>
+<ellipse fill="red" stroke="red" cx="210.547" cy="-234" rx="30.5947" ry="18"/>
 <text text-anchor="middle" x="210.547" y="-230.3" font-family="Times New Roman,serif" font-size="14.00">platA</text>
 </g>
 <!-- platB -->

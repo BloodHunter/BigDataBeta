@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wbl.dao.OuterDataDao">
+
+        <resultMap id="student_map" type="com.wbl.domainOfOuterData.Student">
+                <id property="sId" javaType="string" column="STUDENT_NO"/>
+                <result property="name" javaType="string" column="STUDENT_NAME"/>
+                <result property="className" javaType="string" column="STUDENT_CLASS_NAME"/>
+                <result property="startYear" javaType="int" column="STUDENT_EDU_START_DATE"/>
+                <result property="nation" javaType="string" column="STUDENT_NATION"/>
+                <result property="sex" javaType="string" column="STUDENT_SEX"/>
+                <result property="academy" javaType="string" column="STUDENT_ACADEMY"/>
+                <result property="type" javaType="int" column="STUDENT_TYPE"/>
+                <result property="isInSchool" javaType="int" column="IS_IN_SCHOOL"/>
+        </resultMap>
+
+        <resultMap id="bookLend_map" type="com.wbl.domainOfOuterData.BookLend">
+                <id property="readerId" javaType="string" column="READER_ID"/>
+                <result property="readerName" javaType="string" column="READER_NAME"/>
+                <result property="bookName" javaType="string" column="BOOK_NAME"/>
+                <result property="lentTime" javaType="date" column="LEND_TIME"/>
+                <result property="lendDeadLIne" javaType="date" column="LEND_DEADLINE"/>
+        </resultMap>
+
+        <select id="getReaderName" resultType="string">
+                SELECT DISTINCT READER_NAME
+                FROM book_lend
+        </select>
+
+        <select id="getStudentBasicInfo" resultMap="student_map">
+                SELECT STUDENT_NO,STUDENT_NAME,STUDENT_SEX,STUDENT_ACADEMY
+                FROM student_basic_info
+                LIMIT 1,10
+        </select>
+
+        <select id="getBookLendInfo" resultMap="bookLend_map">
+                SELECT READER_ID,READER_NAME,BOOK_NAME
+                FROM book_lend
+                LIMIT 1,10
+        </select>
+
+        <select id="getStudentBookLend" resultType="com.wbl.domainOfOuterData.StudentBook">
+                SELECT STUDENT_NO AS sId,STUDENT_NAME AS name,BOOK_NAME AS bookName,STUDENT_ACADEMY AS academy
+                FROM student_basic_info,book_lend
+                WHERE STUDENT_NO = READER_ID
+                LIMIT 1,10
+        </select>
+        <select id="getStudent" resultMap="student_map">
+                SELECT *
+                FROM student_basic_info
+                LIMIT 1,10
+        </select>
+
+        <select id="getBookLend" resultMap="bookLend_map">
+                SELECT *
+                FROM book_lend
+                LIMIT 1,10
+        </select>
+</mapper>

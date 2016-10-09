@@ -18,7 +18,7 @@ public class GraphvizUtil {
         public GraphvizUtil(){}
 
         public String start_graph(){
-                return "digraph G {\n" + "concentrate=true\n node[shape=circle]\n";
+                return "digraph G {\n" + "concentrate=true\n node[shape=circle,color=\"#2ecc71\",style=filled]\n";
         }
 
         public String end_graph(){
@@ -153,12 +153,14 @@ public class GraphvizUtil {
         public static void main(String[] args) {
                 GraphvizUtil gv = new GraphvizUtil();
                 gv.add(gv.start_graph());
-                gv.add("concentrate=true");
-                gv.add("platA[URL=\"http://10.103.241.73:8090/BigDataBeta/prov/produceSvgByDotString\"]");
-                gv.add("platA->platB");
-                gv.add("platA->platB");
-                gv.add("platA->platB");
+                //gv.add("platA[URL=\"http://10.103.241.73:8090/BigDataBeta/prov/produceSvgByDotString\"]");
+                /*gv.add("platA->platB");
                 gv.add("platB->platC");
+                gv.add("platB->platD");*/
+                gv.add("studentBookLend");
+                /*gv.add("CPI->Trend");
+                gv.add("Estate->Trend");*/
+                //gv.add("Trend");
                 gv.add(gv.end_graph());
                 gv.writeGraphToFile(gv.getGraph(gv.getDotSource(),"svg"),"F:\\provtest\\test.svg");
                 /*GraphvizUtil gv = new GraphvizUtil();

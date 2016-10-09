@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Simple_love on 2015/11/1.
  */
-@Repository
+@Repository("pageQueryDao")
 public interface PageQueryDao {
         List<Prov> getProv(@Param("startRow")int startRow,@Param("endRow")int endRow);
         List<Prov> getProvByDataId(@Param("dataId")String dataId,@Param("startRow")int startRow,@Param("rowLength")int rowLength);

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wbl.dao.UserDao">
+        <resultMap id="userInfo_map" type="com.wbl.domain.UserInfo">
+                <id column="userId" jdbcType="BIGINT" property="userId"/>
+                <result column="userName" jdbcType="VARCHAR" property="userName"/>
+                <result column="email" jdbcType="VARCHAR" property="email"/>
+                <result column="password" jdbcType="VARCHAR" property="password"/>
+                <result column="hobby" jdbcType="VARCHAR" property="hobby"/>
+                <result column="profession" jdbcType="VARCHAR" property="profession"/>
+                <result column="telephone" jdbcType="VARCHAR" property="department"/>
+                <result column="url" jdbcType="VARCHAR" property="url"/>
+                <result column="insertDate" jdbcType="VARCHAR" property="insertDate"/>
+        </resultMap>
+        <sql id="userInfo_list">
+                userId,userName,email,password,hobby,profession,telephone,url,insertDate
+        </sql>
+
+        <insert id="addUser" parameterType="com.wbl.domain.UserInfo" useGeneratedKeys="true">
+                INSERT INTO userInfo
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="userName!=null">
+                                userName,
+                        </if>
+                        <if test="email!=null">
+                                email,
+                        </if>
+                        <if test="password!=null">
+                                password,
+                        </if>
+                        <if test="hobby!=null">
+                                hobby,
+                        </if>
+                        <if test="profession!=null">
+                                profession,
+                        </if>
+                        <if test="telephone!=null">
+                                department,
+                        </if>
+
+                        <if test="url!=null">
+                                url,
+                        </if>
+                        <if test="insertDate!=null">
+                                insertDate,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="userName!=null">
+                                #{userName},
+                        </if>
+                        <if test="email!=null">
+                                #{email},
+                        </if>
+                        <if test="password!=null">
+                                #{password},
+                        </if>
+                        <if test="hobby!=null">
+                                #{hobby},
+                        </if>
+                        <if test="profession!=null">
+                                #{profession},
+                        </if>
+                        <if test="telephone!=null">
+                                #{telephone},
+                        </if>
+                        <if test="url!=null">
+                                #{url},
+                        </if>
+                        <if test="insertDate!=null">
+                                #{insertDate},
+                        </if>
+                </trim>
+        </insert>
+
+        <select id="findUserByName" parameterType="string" resultMap="userInfo_map">
+                SELECT
+                        <include refid="userInfo_list"/>
+                FROM userinfo
+                WHERE userName = #{name}
+                LIMIT 1
+        </select>
+
+        <select id="findUserByEmail" parameterType="string" resultMap="userInfo_map">
+                SELECT
+                        <include refid="userInfo_list"/>
+                FROM userinfo
+                WHERE email = #{email}
+                LIMIT 1
+        </select>
+</mapper>

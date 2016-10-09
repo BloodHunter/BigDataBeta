@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wbl.dao.DataQueryDao">
+        <resultMap id="dataInfo_map" type="com.wbl.domain.DataInfo">
+                <id column="dataID" javaType="java.lang.String" property="dataId"/>
+                <result column="dataName" javaType="java.lang.String" property="dataName"/>
+                <result column="owner" javaType="int" property="owner"/>
+                <result column="type" javaType="java.lang.String" property="type"/>
+                <result column="dataSize" javaType="long" property="dataSize"/>
+                <result column="description" javaType="string" property="description"/>
+                <result column="category" javaType="string" property="category"/>
+                <result column="status" javaType="integer" property="status"/>
+                <result column="relation" javaType="integer" property="relation"/>
+                <result column="time" javaType="java.sql.Timestamp" property="time"/>
+                <!--<result javaType="java.lang.Long" property="download_times"/>-->
+        </resultMap>
+
+
+        <!--<resultMap id="source_map" type="com.wbl.domain.Source">
+                <id column="id" javaType="int" property="id"/>
+                <result column="dataID" javaType="string" property="dataId"/>
+                <result column="source" javaType="string" property="source"/>
+                <result column="URL" javaType="string" property="url"/>
+        </resultMap>-->
+
+        <sql id="dataInfo_column_list">
+                dataId,dataName,owner,type,dataSize,description,category,datainfo.time
+        </sql>
+
+        <!--<select id="getSource" resultMap="source_map">
+                SELECT source.dataID,source.source
+                FROM source
+                WHERE source.source LIKE #{source}"%"
+        </select>-->
+
+        <select id="getDataInfoOrderByTime" resultMap="dataInfo_map">
+                SELECT
+                <include refid="dataInfo_column_list"/>
+                FROM datainfo
+                WHERE datainfo.status = 1
+                <if test="source!=null">
+                        AND datainfo.owner IN (SELECT userId FROM userinfo WHERE url IS ${source})
+                </if>
+                <if test="type!=null">
+                        AND datainfo.type = #{type}
+                </if>
+                <if test="minSize!=0">
+                        AND dataSize >= #{minSize}
+                </if>
+                <if test="maxSize!=0">
+                        AND  #{maxSize} >= dataSize
+                </if>
+                <if test="category!=0">
+                       AND <![CDATA[
+                        SUBSTRING(category,1,2) = #{category}
+                        ]]>
+                </if>
+                ORDER BY datainfo.time DESC
+                LIMIT #{startRow},#{rowLength}
+        </select>
+
+        <select id="getDataInfoOrderByDownloadTimes" resultMap="dataInfo_map">
+                SELECT
+                <include refid="dataInfo_column_list"/>,COUNT(dataId) AS num
+                FROM prov,datainfo
+                WHERE datainfo.status = 1
+                <if test="source!=null">
+                        AND datainfo.owner IN (SELECT userId FROM userinfo WHERE url IS ${source})
+                </if>
+                <if test="type!=null">
+                        AND datainfo.type = #{type}
+                </if>
+                <if test="minSize!=0">
+                        AND dataSize >= #{minSize}
+                </if>
+                <if test="maxSize!=0">
+                        AND #{maxSize} >= dataSize
+                </if>
+                <if test="category!=0">
+                        AND <![CDATA[
+                        SUBSTRING(category,1,2) = #{category}
+                        ]]>
+                </if>
+                AND prov.activity = "DOWNLOAD"
+                AND prov.entity = datainfo.dataId
+                group by dataId
+                order by num
+                limit #{startRow},#{rowLength}
+        </select>
+
+        <select id="getDataInfoOrderByDataSize" resultMap="dataInfo_map">
+                SELECT
+                <include refid="dataInfo_column_list"/>
+                FROM datainfo
+                WHERE datainfo.status = 1
+                <if test="source!=null">
+                        AND datainfo.owner IN (SELECT userId FROM userinfo WHERE url IS ${source})
+                </if>
+                <if test="type!=null">
+                        AND datainfo.type = #{type}
+                </if>
+                <if test="minSize!=0">
+                        AND dataSize >= #{minSize}
+                </if>
+                <if test="maxSize!=0">
+                        AND #{maxSize} >= dataSize
+                </if>
+                <if test="category!=0">
+                        AND <![CDATA[
+                        SUBSTRING(category,1,2) = #{category}
+                        ]]>
+                </if>
+                ORDER BY dataSize DESC
+                LIMIT #{startRow},#{rowLength}
+        </select>
+
+        <select id="getTotalPagesOfDataInfo" resultType="int">
+                SELECT
+                count(datainfo.dataID)
+                FROM datainfo
+                WHERE datainfo.status = 1
+                <if test="source!=null">
+                        AND datainfo.owner IN (SELECT userId FROM userinfo WHERE url IS ${source})
+                </if>
+                <if test="type!=null">
+                        AND datainfo.type = #{type}
+                </if>
+                <if test="minSize!=0">
+                        AND dataSize >= #{minSize}
+                </if>
+                <if test="maxSize!=0">
+                        AND #{maxSize} >= dataSize
+                </if>
+        </select>
+
+        <select id="getDataOperateTimesByDays" resultType="com.wbl.modal.CountModal" parameterType="string">
+                SELECT <![CDATA[
+                DATE_FORMAT(prov.time,"%Y-%m-%d")
+                ]]> AS name,COUNT(*) AS count
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                AND <![CDATA[
+                 DATE_FORMAT(prov.time,"%Y") = #{year}
+                ]]>
+                AND <![CDATA[
+                 DATE_FORMAT(prov.time,"%m") = #{month}
+                ]]>
+                GROUP BY
+                <![CDATA[
+                DATE_FORMAT(prov.time,"%Y-%m-%d")
+                ]]>
+                ORDER BY name DESC
+        </select>
+
+        <select id="getDataOperateTimesByMonth" resultType="com.wbl.modal.CountModal">
+                SELECT <![CDATA[
+                DATE_FORMAT(prov.time,"%Y-%m")
+                ]]> AS name,COUNT(prov.entity) AS count
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                AND <![CDATA[
+                DATE_FORMAT(prov.time,"%Y") = #{year}
+                ]]>
+                GROUP BY
+                <![CDATA[
+                DATE_FORMAT(prov.time,"%Y-%m")
+                ]]>
+                ORDER BY name DESC
+        </select>
+
+        <select id="getDataOperateTimesByYear" resultType="com.wbl.modal.CountModal">
+                SELECT <![CDATA[
+                DATE_FORMAT(prov.time,"%Y")
+                ]]> AS name,COUNT(prov.entity) AS count
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                GROUP BY
+                <![CDATA[
+                DATE_FORMAT(prov.time,"%Y")
+                ]]>
+                ORDER BY name DESC
+        </select>
+
+        <select id="getDataOperateTimesByType" resultType="com.wbl.modal.CountModal" parameterType="string">
+                SELECT prov.activity AS name,COUNT(prov.activity) AS count
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                GROUP BY prov.activity
+        </select>
+
+        <select id="getHotDataByDownloadTimes" resultType="com.wbl.modal.CountModal">
+                SELECT
+                dataName AS name,COUNT(dataId) AS count
+                FROM prov,datainfo
+                WHERE prov.entity = dataInfo.dataId
+                AND prov.activity = "DOWNLOAD"
+                group by dataId
+                order by count desc
+                limit 0,6
+        </select>
+
+        <select id="getDataIdByUserUsed" resultType="string" parameterType="string">
+                SELECT DISTINCT SUBSTRING_INDEX(prov.used,":",-1)
+                FROM prov
+                WHERE prov.agent = #{userName}
+                AND prov.used is not null
+                ORDER BY prov.pid DESC
+        </select>
+
+        <select id="getCategory" resultType="com.wbl.domain.Category">
+                SELECT *
+                FROM category
+        </select>
+
+        <select id="getDataInfoByUserUpload" resultType="com.wbl.domain.DataInfo">
+                SELECT
+                        <include refid="dataInfo_column_list"/>
+                FROM datainfo
+                WHERE owner = #{ownerId}
+        </select>
+
+        <select id="getLikeData" resultType="com.wbl.modal.CountModal">
+                SELECT <![CDATA[
+                SUBSTRING_INDEX(dataName,'.',1)
+                ]]> AS name,count(dataID) AS count
+                FROM datainfo
+                WHERE dataID != #{dataId}
+                AND <![CDATA[
+                SUBSTRING(category, 1, 2) = #{category}
+                ]]>
+                LIMIT 0,6;
+        </select>
+
+        <select id="getLikeUser" resultType="java.lang.String">
+                SELECT userName
+                FROM userinfo
+                WHERE userinfo.hobby = (SELECT hobby FROM userinfo WHERE userName = #{userName})
+        </select>
+
+
+
+</mapper>

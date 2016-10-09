@@ -1,45 +1,52 @@
 package com.wbl.dao;
 
 import com.wbl.domain.*;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * Created by Simple_love on 2015/10/26.
- *
+ * Created with Simple_love
+ * Date: 2016/4/25.
+ * Time: 9:29
  */
+@Repository("provDao")
 public interface ProvDao {
-        List<Prov> getProv();
-        List<Prov> getProv(String agent);
-        List<Prov> getProv(int start, int end);
 
-        boolean save(Prov prov);
-        boolean update(Prov prov);
+    void saveProv(Prov prov);
 
-        boolean save(DataInfo dataInfo);
-        boolean update(DataInfo dataInfo);
+    void saveDataInfo(DataInfo dataInfo);
+    void updateDataInfo(DataInfo dataInfo);
 
-        boolean save(Next next);
-        boolean save(Source source);
-        boolean save(RelationInfo relationInfo);
-        boolean save(ReceivedParam receivedParam);
-        boolean save(SendParam sendParam);
+    void saveNext(Next next);
+    void saveSource(Source source);
+    void saveRelationInfo(RelationInfo info);
+    void saveReceivedParam(ReceivedParam param);
 
-        List getProvs(String dataId);
-        List<Next> getNext(String dataID);
-        List<Source> getSource(String dataID);
-        List<RelationInfo> getAncestor(String dataID);
-        List<RelationInfo> getSuccessor(String dataID);
+    Next isNextExist(Next next);
+    List<Next> getNext(String dataId);
 
-        DataInfo getDataInfoByDataId(String dataId);
-        DataInfo getDataInfoByName(String dataName);
+    Source isSourceExist(Source source);
+    List<Source> getSource(String dataId);
 
-        ReceivedParam getReceivedParam(ReceivedParam param);
-        SendParam getSendParam(SendParam param);
+    RelationInfo isRelationExist(RelationInfo info);
+    List<RelationInfo> getAncestor(String dataId);
+    List<RelationInfo> getSuccessor(String dataId);
 
-        List getDataIdFromParam(String queryFrom,String queryFor,String requestId);
+    DataInfo getDataInfoByDataId(String dataId);
+    DataInfo getDataInfoByName(String dataName);
+    DataInfo getLastDataInfo();
 
-        long getTimesForDownload(String dataId);
-        Prov getDataSourceInfo(String dataId);
+    ReceivedParam getReceivedParam(ReceivedParam param);
+    List<String> getDataIdFromReceivedParam(@Param("queryFrom")String queryFrom,
+                                            @Param("queryFor")String queryFor,@Param("requestId")String requestId);
 
+    List<Prov> getProvs(String dataId);
+    List<Prov> getProvByDataId(@Param("dataId")String dataId,@Param("startRow")int startRow,@Param("rowLength")int rowLength);
+    int getPagesByDataIdFromProv(@Param("dataId")String dataId);
+
+    List<Prov> getProvByDataIdAndActivity(@Param("dataId")String dataId,@Param("activity")String activity,
+                                          @Param("startRow")int startRow, @Param("rowLength")int rowLength);
+    int getPagesByDataIdAndActivity(@Param("dataId")String dataId,@Param("activity")String activity);
 }

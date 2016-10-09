@@ -7,100 +7,162 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-        <context:component-scan base-package="com.wbl"/>
+    <context:component-scan base-package="com.wbl"/>
 
-        <!--导入属性文件connectInfo.properties-->
-        <context:property-placeholder location="classpath:connectInfo.properties"/>
+    <!--导入属性文件connectInfo.properties-->
+    <context:property-placeholder location="classpath:connectInfo.properties"/>
 
-        <!--配置数据源-->
-        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-                <property name="driverClassName" value="${dataSource.driver}"/>
-                <property name="url" value="${dataSource.url}"/>
-                <property name="username" value="${dataSource.username}"/>
-                <property name="password" value="${dataSource.password}"/>
-                <property name="initialSize" value="${dataSource.initialSize}"/>
-                <property name="maxIdle" value="${dataSource.maxIdle}"/>
-                <property name="maxActive" value="${dataSource.maxActive}"/>
-                <property name="maxWait" value="${dataSource.maxWait}"/>
-                <property name="minIdle" value="${dataSource.minIdle}"/>
-        </bean>
+    <!--配置数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${dataSource.driver}"/>
+        <property name="url" value="${dataSource.url}"/>
+        <property name="username" value="${dataSource.username}"/>
+        <property name="password" value="${dataSource.password}"/>
+        <property name="initialSize" value="${dataSource.initialSize}"/>
+        <property name="maxIdle" value="${dataSource.maxIdle}"/>
+        <property name="maxActive" value="${dataSource.maxActive}"/>
+        <property name="maxWait" value="${dataSource.maxWait}"/>
+        <property name="minIdle" value="${dataSource.minIdle}"/>
+    </bean>
 
-        <!--Spring与Hibernate整合 -->
-        <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-                <property name="dataSource" ref="dataSource"/>
-                <property name="annotatedClasses">
-                        <list>
-                                <value>com.wbl.domain.Prov</value>
-                                <value>com.wbl.domain.DataInfo</value>
-                                <value>com.wbl.domain.Next</value>
-                                <value>com.wbl.domain.RelationInfo</value>
-                                <value>com.wbl.domain.Source</value>
-                                <value>com.wbl.domain.ReceivedParam</value>
-                                <value>com.wbl.domain.SendParam</value>
-                        </list>
-                </property>
-                <property name="hibernateProperties">
-                        <value>
-                                hibernate.dialect=org.hibernate.dialect.MySQLDialect
-                                <!-- hibernate.show_sql=true-->
-                                hibernate.format_sql=false
-                                hibernate.optimistic-lock=all
-                                hibernate.hbm2ddl.auto=update
-                        </value>
-                </property>
-        </bean>
+    <bean id="otherDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${dataSource.driver}"/>
+        <property name="url" value="${dataSource.otherUrl}"/>
+        <property name="username" value="${dataSource.username}"/>
+        <property name="password" value="${dataSource.password}"/>
+        <property name="initialSize" value="${dataSource.initialSize}"/>
+        <property name="maxIdle" value="${dataSource.maxIdle}"/>
+        <property name="maxActive" value="${dataSource.maxActive}"/>
+        <property name="maxWait" value="${dataSource.maxWait}"/>
+        <property name="minIdle" value="${dataSource.minIdle}"/>
+    </bean>
 
-        <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-                <property name="sessionFactory" ref="hibernateSessionFactory" />
-        </bean>
+    <!--mybatis 多数据源配置-->
+    <bean id="multipleDataSource" class="com.wbl.modal.MultipleDataSource">
+        <property name="defaultTargetDataSource" ref="dataSource"/>
+        <property name="targetDataSources">
+            <map>
+                <entry key="dataSource" value-ref="dataSource"/>
+                <entry key="otherDataSource" value-ref="otherDataSource"/>
+            </map>
+        </property>
+    </bean>
 
-        <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
-        <bean id="transactionManager"
-              class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-                <property name="dataSource" ref="dataSource" />
-        </bean>
+    <!--Spring与Hibernate整合 -->
+    <!--<bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+            <property name="dataSource" ref="dataSource"/>
+            <property name="annotatedClasses">
+                    <list>
+                            <value>com.wbl.domain.Prov</value>
+                            <value>com.wbl.domain.DataInfo</value>
+                            <value>com.wbl.domain.Next</value>
+                            <value>com.wbl.domain.RelationInfo</value>
+                            <value>com.wbl.domain.Source</value>
+                            <value>com.wbl.domain.ReceivedParam</value>
+                            <value>com.wbl.domain.SendParam</value>
+                            <value>com.wbl.domain.Category</value>
+                    </list>
+            </property>
+            <property name="hibernateProperties">
+                    <value>
+                            hibernate.dialect=org.hibernate.dialect.MySQLDialect
+                            &lt;!&ndash; hibernate.show_sql=true&ndash;&gt;
+                            hibernate.format_sql=false
+                            hibernate.optimistic-lock=all
+                            hibernate.hbm2ddl.auto=update
+                    </value>
+            </property>
+    </bean>
 
-        <!--Spring与mybatis整合-->
-        <bean id="mybatisSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-                <property name="dataSource" ref="dataSource"/>
-                <!--自动扫描Mapping.xml文件-->
-                <property name="mapperLocations" value="classpath:mapping/*.xml"/>
-        </bean>
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+            <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>-->
 
-        <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
-        <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-                <property name="basePackage" value="com.wbl.dao" />
-                <property name="sqlSessionFactoryBeanName" value="mybatisSqlSessionFactory"/>
-        </bean>-->
-        <bean id="pageQueryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-                <property name="mapperInterface" value="com.wbl.dao.PageQueryDao" />
-                <property name="sqlSessionFactory" ref="mybatisSqlSessionFactory" />
-        </bean>
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <!--<bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource" />
+    </bean>-->
 
-        <bean id="mybatisSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-                <constructor-arg index="0" ref="mybatisSqlSessionFactory" />
-        </bean>
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="multipleDataSource" />
+    </bean>
 
-        <!--Quartz-->
-        <!--<bean name="quartzTest" class="test.com.wbl.quartz.QuartzTest"/>-->
-        <bean name="deleteFileJob" class="com.wbl.modal.time.DeleteFileJob"/>
-        <bean id="quartzTestJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-                <property name="targetObject" ref="deleteFileJob"/>
-                <property name="targetMethod" value="deleteFile"/>
-                <property name="concurrent" value="false"/>
-        </bean>
 
-        <bean id="myJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-                <property name="jobDetail" ref="quartzTestJob" />
-                <!--设置任务触发的时间，每天的16：45-->
-                <property name="cronExpression" value="0 45 16 * * ?"/>
-        </bean>
+    <!--Spring与mybatis整合-->
+    <bean id="mybatisSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--<property name="dataSource" ref="dataSource"/>-->
+        <property name="dataSource" ref="multipleDataSource"/>
+        <!--自动扫描Mapping.xml文件-->
+        <property name="mapperLocations" value="classpath:mapping/*.xml"/>
+    </bean>
 
-        <bean name="startQuartz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-                <property name="triggers">
-                        <list>
-                                <ref bean="myJobTrigger" />
-                        </list>
-                </property>
-        </bean>
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wbl.dao" />
+        <property name="sqlSessionFactoryBeanName" value="mybatisSqlSessionFactory"/>
+    </bean>
+    <!--<bean id="provDao2" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="com.wbl.dao.ProvDao"/>
+            <property name="sqlSessionFactory" ref="mybatisSqlSessionFactory"/>
+    </bean>
+
+    <bean id="pageQueryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="com.wbl.dao.PageQueryDao" />
+            <property name="sqlSessionFactory" ref="mybatisSqlSessionFactory" />
+    </bean>
+
+    <bean id="dataQueryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="com.wbl.dao.DataQueryDao"/>
+            <property name="sqlSessionFactory" ref="mybatisSqlSessionFactory"/>
+    </bean>
+
+    <bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="com.wbl.dao.UserDao"/>
+            <property name="sqlSessionFactory" ref="mybatisSqlSessionFactory"/>
+    </bean>-->
+
+    <bean id="mybatisSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="mybatisSqlSessionFactory" />
+    </bean>
+
+    <!--Quartz-->
+    <!--<bean name="quartzTest" class="test.com.wbl.quartz.QuartzTest"/>-->
+    <bean name="deleteFileJob" class="com.wbl.modal.time.DeleteFileJob"/>
+    <bean id="quartzTestJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="deleteFileJob"/>
+        <property name="targetMethod" value="deleteFile"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="myJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="quartzTestJob" />
+        <!--设置任务触发的时间，每天的16：45-->
+        <property name="cronExpression" value="0 0 23 * * ?"/>
+    </bean>
+
+    <bean name="startQuartz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="myJobTrigger" />
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="redisPoolManager" class="com.wbl.dao.RedisPoolManager" init-method="init">
+        <property name="address" value="${redis.address}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="maxActive" value="${redis.maxActive}"/>
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxWait" value="${redis.maxWait}"/>
+    </bean>
+
+    <bean id="refreshRedisService" class="com.wbl.service.impl.RefreshRedisServiceImpl" init-method="init">
+        <property name="hour" value="${redis.refresh.time.hour}"/>
+        <property name="minute" value="${redis.refresh.time.minute}"/>
+        <property name="second" value="${redis.refresh.time.second}"/>
+    </bean>
+
 </beans>

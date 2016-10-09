@@ -8,7 +8,7 @@
                 <result column="agent" javaType="java.lang.String" property="agent"/>
                 <result column="activity" javaType="java.lang.String" property="activity"/>
                 <result column="used" javaType="java.lang.String" property="used"/>
-                <result column="time" javaType="java.lang.String" property="time"/>
+                <result column="time" javaType="java.sql.Timestamp" property="time"/>
         </resultMap>
         <sql id="prov_column_list">
                 pid,prefix,entity,agent,activity,used,time
@@ -18,5 +18,17 @@
                 <include refid="prov_column_list"/>
                 FROM prov
                 limit #{startRow},#{endRow}
+        </select>
+        <select id="getProvByDataId" resultMap="resultMap_Prov">
+                SELECT
+                <include refid="prov_column_list"/>
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                limit #{startRow},#{rowLength}
+        </select>
+        <select id="getPagesByDataIdFromProv" resultType="java.lang.Integer">
+                SELECT COUNT(prov.pid)
+                FROM prov
+                WHERE prov.entity = #{dataId}
         </select>
 </mapper>

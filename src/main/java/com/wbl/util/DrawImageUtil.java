@@ -3,9 +3,7 @@ package com.wbl.util;
 import com.wbl.modal.PlatformNode;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,7 +50,28 @@ public class DrawImageUtil {
                 } catch (IOException e) {
                         e.printStackTrace();
                 }finally {
-                        out.delete();
+                        if (out!=null)
+                                out.delete();
+                }
+                return null;
+        }
+
+        public static byte[] draw(List<String> relations){
+                File out = null;
+                GraphvizUtil gv = new GraphvizUtil();
+                try {
+                        out = File.createTempFile("temp",".svg");
+                        gv.add(gv.start_graph());
+                        for (String line : relations)
+                                gv.add(line);
+                        gv.add(gv.end_graph());
+                        gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), IMAGE_TYPE), out);
+                        return IOUtils.toByteArray(new FileInputStream(out));
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }finally {
+                        if (out != null)
+                                out.delete();
                 }
                 return null;
         }
@@ -81,10 +100,10 @@ public class DrawImageUtil {
                 return path;
         }
 
-        public static void main(String[] args) {
-                PlatformNode nodeA = new PlatformNode("platA", Arrays.asList("platB","platF"));
-                PlatformNode nodeB = new PlatformNode("platB", Arrays.asList("platC","platD","platE"));
-                PlatformNode nodeC = new PlatformNode("platC", Arrays.asList("platF"));
+        public static void main(String[] args) throws Exception {
                 //draw(Arrays.asList(nodeA,nodeB,nodeC),"C:\\Users\\Lulala\\IdeaProjects\\BigDataBeta\\src\\main\\webapp\\WEB-INF\\provImage\\test1.svg");
+                File file = new File("F://svgTest.svg");
+                FileOutputStream out = new FileOutputStream(file);
+                out.write(draw("data1.bmp"));
         }
 }

@@ -30,6 +30,10 @@ public class PlatformInfo {
                 }
         }
 
+        public static Properties getProp() {
+                return prop;
+        }
+
         public static void main(String[] args) {
                 System.out.println(PLATFORM_NAME);
         }

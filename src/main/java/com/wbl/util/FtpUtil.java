@@ -255,5 +255,6 @@ public class FtpUtil {
                 int c ;
                 while ((c = is.read(buffer)) != -1)
                         os.write(buffer,0,c);*/
+                makePrivateSpace("简单爱小败");
         }
 }

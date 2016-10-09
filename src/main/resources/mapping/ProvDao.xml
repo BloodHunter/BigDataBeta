@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wbl.dao.ProvDao">
+        <resultMap id="prov_map" type="com.wbl.domain.Prov">
+                <id column="pid" javaType="int" property="pid"/>
+                <result column="prefix" javaType="string" property="prefix"/>
+                <result column="entity" javaType="string" property="entity"/>
+                <result column="agent" javaType="string" property="agent"/>
+                <result column="activity" javaType="string" property="activity"/>
+                <result column="used" javaType="string" property="used"/>
+                <result column="time" jdbcType="DATE" property="time"/>
+        </resultMap>
+
+        <resultMap id="next_map" type="com.wbl.domain.Next">
+                <id column="id" javaType="int" property="id"/>
+                <result column="dataId" javaType="string" property="dataId"/>
+                <result column="next" javaType="string" property="next"/>
+                <result column="url" javaType="string" property="url"/>
+        </resultMap>
+
+        <resultMap id="source_map" type="com.wbl.domain.Source">
+                <id column="id" javaType="int" property="id"/>
+                <result column="dataId" javaType="string" property="dataId"/>
+                <result column="source" javaType="string" property="source"/>
+                <result column="url" javaType="string" property="url"/>
+        </resultMap>
+
+        <resultMap id="relationInfo_map" type="com.wbl.domain.RelationInfo">
+                <id column="id" javaType="int" property="id"/>
+                <result column="ancestor" javaType="string" property="ancestor"/>
+                <result column="successor" javaType="string" property="successor"/>
+        </resultMap>
+
+        <resultMap id="receivedParam" type="com.wbl.domain.ReceivedParam">
+                <id column="id" javaType="int" property="pId"/>
+                <result property="dataId" javaType="string" column="dataId"/>
+                <result property="queryFor" javaType="string" column="queryFor"/>
+                <result property="queryFrom" javaType="string" column="queryFrom"/>
+                <result property="reportUrl" javaType="string" column="reportUrl"/>
+                <result property="requestId" javaType="string" column="requestId"/>
+        </resultMap>
+
+        <sql id="prov_list">
+                prefix,entity,agent,activity,used,time
+        </sql>
+
+        <insert id="saveProv" parameterType="com.wbl.domain.Prov" useGeneratedKeys="true">
+                INSERT INTO prov
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="prefix!=null">
+                                prefix,
+                        </if>
+                        <if test="entity!=null">
+                                entity,
+                        </if>
+                        <if test="agent!=null">
+                                agent,
+                        </if>
+                        <if test="activity!=null">
+                                activity,
+                        </if>
+                        <if test="used!=null">
+                                used,
+                        </if>
+                        <if test="time!=null">
+                                time,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="prefix!=null">
+                                #{prefix},
+                        </if>
+                        <if test="entity!=null">
+                                #{entity},
+                        </if>
+                        <if test="agent!=null">
+                                #{agent},
+                        </if>
+                        <if test="activity!=null">
+                                #{activity},
+                        </if>
+                        <if test="used!=null">
+                                #{used},
+                        </if>
+                        <if test="time!=null">
+                                #{time},
+                        </if>
+                </trim>
+        </insert>
+
+        <insert id="saveDataInfo" parameterType="com.wbl.domain.DataInfo">
+                INSERT INTO datainfo
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                dataId,
+                        </if>
+                        <if test="dataName!=null">
+                                dataName,
+                        </if>
+                        <if test="owner!=null">
+                                owner,
+                        </if>
+                        <if test="type!=null">
+                                type,
+                        </if>
+                        <if test="dataSize!=null">
+                                dataSize,
+                        </if>
+                        <if test="description!=null">
+                                description,
+                        </if>
+                        <if test="category">
+                                category,
+                        </if>
+                        <if test="status">
+                                status,
+                        </if>
+                        <if test="relation">
+                                relation,
+                        </if>
+                        <if test="time">
+                                time,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                #{dataId},
+                        </if>
+                        <if test="dataName!=null">
+                                #{dataName},
+                        </if>
+                        <if test="owner!=null">
+                                #{owner},
+                        </if>
+                        <if test="type!=null">
+                                #{type},
+                        </if>
+                        <if test="dataSize!=null">
+                                #{dataSize},
+                        </if>
+                        <if test="description!=null">
+                                #{description},
+                        </if>
+                        <if test="category!=null">
+                                #{category},
+                        </if>
+                        <if test="status!=null">
+                                #{status},
+                        </if>
+                        <if test="relation!=null">
+                                #{relation},
+                        </if>
+                        <if test="time!=null">
+                                #{time},
+                        </if>
+                </trim>
+        </insert>
+        <insert id="saveNext" parameterType="com.wbl.domain.Next" useGeneratedKeys="true">
+                INSERT INTO next
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                dataId,
+                        </if>
+                        <if test="next!=null">
+                                next,
+                        </if>
+                        <if test="url!=null">
+                                url,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                #{dataId},
+                        </if>
+                        <if test="next!=null">
+                                #{next},
+                        </if>
+                        <if test="url!=null">
+                                #{url},
+                        </if>
+                </trim>
+        </insert>
+        <insert id="saveSource"  parameterType="com.wbl.domain.Source" useGeneratedKeys="true">
+                INSERT INTO source
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                dataId,
+                        </if>
+                        <if test="source!=null">
+                                source,
+                        </if>
+                        <if test="url!=null">
+                                url,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                #{dataId},
+                        </if>
+                        <if test="source!=null">
+                                #{source},
+                        </if>
+                        <if test="url!=null">
+                                #{url},
+                        </if>
+                </trim>
+        </insert>
+        <insert id="saveRelationInfo" parameterType="com.wbl.domain.RelationInfo" useGeneratedKeys="true">
+                INSERT INTO relationinfo
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="ancestor!=null">
+                                ancestor,
+                        </if>
+                        <if test="successor!=null">
+                                successor,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="ancestor!=null">
+                                #{ancestor},
+                        </if>
+                        <if test="successor!=null">
+                                #{successor},
+                        </if>
+                </trim>
+        </insert>
+        <insert id="saveReceivedParam" parameterType="com.wbl.domain.ReceivedParam" useGeneratedKeys="true">
+                INSERT INTO receivedparam
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                dataId,
+                        </if>
+                        <if test="queryFor!=null">
+                                queryFor,
+                        </if>
+                        <if test="queryFrom!=null">
+                                queryFrom,
+                        </if>
+                        <if test="reportUrl!=null">
+                                reportUrl,
+                        </if>
+                        <if test="requestId!=null">
+                                requestId,
+                        </if>
+                </trim>
+                VALUES
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="dataId!=null">
+                                #{dataId},
+                        </if>
+                        <if test="queryFor!=null">
+                                #{queryFor},
+                        </if>
+                        <if test="queryFrom!=null">
+                                #{queryFrom},
+                        </if>
+                        <if test="reportUrl!=null">
+                                #{reportUrl},
+                        </if>
+                        <if test="requestId!=null">
+                                #{requestId},
+                        </if>
+                </trim>
+        </insert>
+
+        <update id="updateDataInfo" parameterType="com.wbl.domain.DataInfo">
+                UPDATE datainfo
+                <set>
+                        <if test="dataName!=null">
+                                dataName = #{dataName},
+                        </if>
+                        <if test="owner!=null">
+                                owner = #{owner},
+                        </if>
+                        <if test="type!=null">
+                                type = #{type},
+                        </if>
+                        <if test="dataSize!=null">
+                                dataSize = #{dataSize},
+                        </if>
+                        <if test="description!=null">
+                                description = #{description},
+                        </if>
+                        <if test="category!=null">
+                                category = #{category},
+                        </if>
+                        <if test="status!=null">
+                               status =  #{status},
+                        </if>
+                        <if test="relation!=null">
+                                relation = #{relation},
+                        </if>
+                        <if test="time!=null">
+                                time = #{time},
+                        </if>
+                </set>
+                WHERE dataId = #{dataId}
+        </update>
+
+        <select id="isNextExist" resultType="com.wbl.domain.Next">
+                SELECT *
+                FROM next
+                WHERE dataID = #{dataId}
+                AND next = #{next}
+                LIMIT 1
+        </select>
+        <select id="getNext" resultType="com.wbl.domain.Next" parameterType="string">
+                SELECT *
+                FROM next
+                WHERE dataID = #{dataId}
+        </select>
+
+        <select id="isSourceExist" resultMap="source_map" parameterType="com.wbl.domain.Source">
+                SELECT *
+                FROM source
+                WHERE dataID = #{dataId}
+                AND source = #{source}
+                LIMIT 1
+        </select>
+        <select id="getSource" resultType="com.wbl.domain.Source" parameterType="string">
+                SELECT *
+                FROM source
+                WHERE dataID = #{dataId}
+        </select>
+
+
+        <select id="isRelationExist" resultType="com.wbl.domain.RelationInfo">
+                SELECT *
+                FROM relationinfo
+                WHERE ancestor = #{ancestor}
+                AND successor = #{successor}
+        </select>
+        <select id="getAncestor" resultType="com.wbl.domain.RelationInfo" parameterType="string">
+                SELECT *
+                FROM relationinfo
+                WHERE successor = #{dataId}
+        </select>
+        <select id="getSuccessor" resultType="com.wbl.domain.RelationInfo" parameterType="string">
+                SELECT *
+                FROM relationinfo
+                WHERE ancestor = #{dataId}
+        </select>
+
+
+        <select id="getDataInfoByDataId" resultType="com.wbl.domain.DataInfo" parameterType="string">
+                SELECT *
+                FROM datainfo
+                WHERE dataID = #{dataId}
+                LIMIT 1
+        </select>
+        <select id="getDataInfoByName" resultType="com.wbl.domain.DataInfo" parameterType="string">
+                SELECT *
+                FROM datainfo
+                WHERE  dataName like <![CDATA[
+                concat(#{dataName},'%')
+                ]]>
+                LIMIT 1
+        </select>
+        <select id="getLastDataInfo" resultType="com.wbl.domain.DataInfo">
+                SELECT *
+                FROM datainfo
+                ORDER BY time DESC
+                LIMIT 1
+        </select>
+
+        <select id="getReceivedParam" resultType="com.wbl.domain.ReceivedParam" parameterType="com.wbl.domain.ReceivedParam">
+                SELECT *
+                FROM receivedparam
+                WHERE queryFrom = #{queryFrom}
+                AND queryFor = #{queryFor}
+                AND requestId = #{requestId}
+                AND dataId = #{dataId}
+        </select>
+        <select id="getDataIdFromReceivedParam" resultType="string">
+                SELECT receivedparam.dataId
+                FROM receivedparam
+                WHERE queryFor = #{queryFor}
+                AND queryFrom = #{queryFrom}
+                AND requestId = #{requestId}
+        </select>
+
+        <select id="getProvs" resultMap="prov_map" parameterType="string">
+                SELECT *
+                FROM prov
+                WHERE prov.entity = #{dataId}
+        </select>
+        <select id="getProvByDataId" resultType="com.wbl.domain.Prov">
+                SELECT *
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                LIMIT #{startRow},#{rowLength}
+        </select>
+        <select id="getPagesByDataIdFromProv" resultType="java.lang.Integer">
+                SELECT count(prov.pid)
+                FROM prov
+                WHERE prov.entity = #{dataId}
+        </select>
+        <select id="getProvByDataIdAndActivity" resultType="com.wbl.domain.Prov">
+                SELECT
+                <include refid="prov_list"/>
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                <if test="activity!=null">
+                        AND prov.activity = #{activity}
+                </if>
+                LIMIT #{startRow},#{rowLength}
+        </select>
+        <select id="getPagesByDataIdAndActivity" resultType="java.lang.Integer">
+                SELECT count(prov.pid)
+                FROM prov
+                WHERE prov.entity = #{dataId}
+                <if test="activity!=null">
+                        AND prov.activity = #{activity}
+                </if>
+        </select>
+
+
+</mapper>

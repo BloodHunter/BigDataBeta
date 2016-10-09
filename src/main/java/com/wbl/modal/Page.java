@@ -6,22 +6,22 @@ import java.util.ArrayList;
  * Created by Simple_love on 2015/12/21.
  */
 public class Page<E> extends ArrayList<E> {
-        // Ò³Âë
+        // é¡µç 
         private int currentPage;
 
-        //Ã¿Ò³ÏÔÊ¾µÄĞĞÊı
+        //æ¯é¡µæ˜¾ç¤ºçš„è¡Œæ•°
         private int pageSize = 10;
 
-        //×Ü¹²µÄĞĞÊı
+        //æ€»å…±çš„è¡Œæ•°
         private int total;
 
-        //×ÜµÄÒ³Êı£¬¼´¹²ÓĞ¼¸Ò³
+        //æ€»çš„é¡µæ•°ï¼Œå³å…±æœ‰å‡ é¡µ
         private int pages;
 
-        //ÆğÊ¼ĞĞ
+        //èµ·å§‹è¡Œ
         private int startRow;
 
-        //Ä©ĞĞ
+        //æœ«è¡Œ
         private int endRow;
 
         public Page() {
