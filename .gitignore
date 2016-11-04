@@ -1,0 +1,9 @@
+/src/main/resources/connectInfo.properties
+/src/main/resources/platformInfo.properties
+/target
+.idea/
+*.ipr
+*.iml
+*.iws
+*/.gitignore 
+
